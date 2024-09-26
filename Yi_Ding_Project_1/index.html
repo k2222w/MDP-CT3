@@ -14,24 +14,71 @@
         </header>
 
         <!-- Replacing image-placeholder with actual image -->
-        <section class="project-image">
-            <img src="images/IMG_2646.JPG" alt="Project Image" class="image">
+        <section class="project-video">
+            <video controls width="100%">
+                <source src="images/final video.mp4" type="video/mp4">
+            </video>
         </section>
+
 
         <section class="about">
             <h3>About the project</h3>
             <div class="about-content">
-                <p>Lorem ipsum dolor sit amet consectetur. Elementum diam sit senectus viverra fames velit tempus. Erat risus egestas posuere suspendisse in purus. Praesent pellentesque id non ullamcorper pharetra tristique malesuada quis. Nunc scelerisque consectetur amet eget cursus blandit in.</p>
+                <p>Little Signals builds on Calm Technology.<br>
+                    Many everyday objects find subtle ways to inforrus - from the moving hands of a clock to thewhistle of a kettle. Little Signals continues thattheme and explores how we might stay up-to-date with digital information while maintainingmoments of calm.
+                <br><br><a href="https://littlesignals.withgoogle.com/">https://littlesignals.withgoogle.com/</a></p>
+                
                 <!-- Replacing about-image-placeholder with actual image -->
-                <img src="images/IMG_2646.JPG" alt="About Image" class="about-image">
+                <img src="images/about.jpg" alt="About Image" class="about-image">
             </div>
         </section>
 
         <section class="diagramming">
             <h3>Diagramming</h3>
             <!-- Replacing diagram-image-placeholder with actual image -->
-            <img src="images/IMG_2646.JPG" alt="Diagram Image" class="diagram-image">
-            <p>Lorem ipsum dolor sit amet consectetur. Elementum diam sit senectus viverra fames velit tempus. Erat risus egestas posuere suspendisse in purus. Praesent pellentesque id non ullamcorper pharetra tristique malesuada quis. Nunc scelerisque consectetur amet eget cursus blandit in.</p>
+            <img src="images/Circuit 1.png" alt="Diagram Image" class="diagram-image">
+            <p>I designed two internal circuits for this prototype. The first one uses a sound detector and a servo motor. When the detected environmental sound exceeds a certain threshold, the circuit will drive the servo to operate, completing the tap action from the original project.</p>
+            <img src="images/Circuit 2.png" alt="Diagram Image" class="diagram-image">
+            <p>The second one uses an ultrasonic sensor and a servo motor. This corresponds to the second use case shown in the original project, where the circuit drives the servo when the detected distance is less than a specific range. However, I want to point out that in this project, I simplified the rotating function of the upper part of the product from the original project, using a simple tap instead to achieve the required functionality.</p>
+        </section>
+
+        <section class="diagramming">
+            <h3>Circuit Building</h3>
+            <!-- Replacing diagram-image-placeholder with actual image -->
+            <div class="about-content">
+                <p>The image on the right shows the actual appearance of the first circuit. Although this project focuses on designing a prototype, I took the size into consideration when assembling the circuit to closely replicate the effect shown in the original project. As a result, I purchased a half-sized breadboard. Additionally, the sound detection sensor was a new experience for me, so I learned its working principles and how to use it from scratch, which was an extra takeaway from this project.</p>
+                <!-- Replacing about-image-placeholder with actual image -->
+                <img src="images/IMG_2646.JPG" alt="About Image" class="about-image">
+            </div>
+            <img src="images/Coding 1.png" alt="Diagram Image" class="diagram-image">
+            <p>I made a series of iterations to the Arduino code. The initial version 1.0 had a very straightforward logic—while simple, it didn’t operate smoothly enough for a product. The servo motor’s rotation was too fast, and the intervals between operations were too short, potentially causing logic conflicts. So, I iterated to versions 2.0 and 3.0. In the final 3.0 version, the logic ensures that the servo remains disconnected unless the sound detector exceeds a preset threshold. I also added delays at each step of the servo operation to ensure no conflicts during execution.</p>
+            <video controls width="100%">
+                <source src="images/IMG_2651.mp4" type="video/mp4">
+            </video>
+            <p>Another issue I encountered was with the power supply for the circuit. The sound detector and servo motor couldn’t be powered simultaneously through the PC, as they wouldn’t function properly. In fact, according to the sound detector’s documentation, the Sound Detector is an analog circuit, and as such, it’s more sensitive to noise on the power supply than most digital circuits. The servo generates a lot of electrical noise during operation, which interferes with the detector’s functionality. To solve this, I used an external power source to supply the sound detector, ensuring it received clean, stable power.</p>
+            <video controls width="100%">
+                <source src="images/IMG_2649.mp4" type="video/mp4">
+            </video>
+            <p>The second circuit is relatively much simpler. There are no power supply issues when the ultrasonic sensor and servo motor work together, and the Arduino code is also much simpler compared to the sound sensor. The video shows how the actual circuit works, and as can be seen, the overall process is very straightforward. Therefore, in this project, I did not focus on advancing and showcasing this circuit.</p>
+        </section>
+
+        <section class="diagramming"></section>
+            <h3>Outside Structure Building</h3>
+            <!-- Replacing diagram-image-placeholder with actual image -->
+            <div class="about-content">
+                <p>Based on the discussion with Matt in class, I ultimately decided to use LEGO as the primary material for the external structure. The reasons for choosing LEGO are, first, that it provides greater stability compared to cardboard, especially for an object that needs to be placed steadily on a flat surface. Second, LEGO pieces have their own weight, which can act as part of the object’s counterweight to further stabilize the entire structure. So, I went to a brick store to assemble and purchase some LEGO pieces.</p>
+                
+                <!-- Replacing about-image-placeholder with actual image -->
+                <img src="images/IMG_2655.JPG" alt="About Image" class="about-image">
+            </div>
+            <video class="portraitvideo" controls width="100%">
+                <source src="images/IMG_2679.mp4" type="video/mp4">
+            </video>
+            <p>The final internal structure is shown in the image. The lower part of the structure acts as the center of gravity, providing stability. You can see that I also placed the battery pack, which powers the sound detector, at the bottom. The upper part consists of a support platform and a hollow structure. The platform holds the servo motor, while the main parts of the circuit, the Arduino board and breadboard, are placed inside the hollow structure. I positioned the microphone of the sound detector facing forward, aligning with the project’s operational logic. As you can see, everything is neatly assembled.</p>
+            <video controls width="100%">
+                <source src="images/IMG_2685.mp4" type="video/mp4">
+            </video>
+            <p>The final step in building this project was to cover the internal LEGO structure with cardboard to make it look more like a finished product. Initially, I thought about using the LEGO shape as the final output, but the difficulties were greater than expected. First, designing a complete LEGO shell turned out to be much harder than I imagined. I tried using Brick Studio for the design, but the workload far exceeded my expectations. Additionally, sourcing specific LEGO pieces was quite challenging. So, considering both time and cost, I abandoned that idea. The video now shows my alternative solution. I purchased two colors of cardboard and used them to create a layer covering the previously completed internal structure.</p>
         </section>
     </div>
 </body>

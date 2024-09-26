@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'ProductSans';
+    src: url("fonts/Product Sans Regular.ttf") format("truetype")
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,10 +10,10 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'ProductSans', sans-serif;
     line-height: 1.6;
     padding: 20px;
-    background-color: #f8f8f8;
+    background-color: #F9E2C4;
 }
 
 .container {
@@ -17,12 +22,12 @@ body {
 }
 
 header h1 {
-    color: #F8A529;
+    color: #7CA4E1;
     font-size: 36px;
 }
 
 header h2 {
-    color: #F8A529;
+    color: #7CA4E1;
     font-size: 24px;
     margin-bottom: 20px;
 }
@@ -42,14 +47,15 @@ section {
 }
 
 h3 {
-    color: #F8A529;
+    color: #7CA4E1;
     font-size: 24px;
     margin-bottom: 10px;
 }
 
 p {
-    font-size: 16px;
-    color: #333;
+    font-size: 18px;
+    color: #533E22;
+    margin-bottom: 50px;
 }
 
 /* General styles */
@@ -57,7 +63,7 @@ p {
     width: 100%;
     height: auto; /* Automatically adjust height based on the image's aspect ratio */
     display: block;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 /* Adjust specific image dimensions */
@@ -68,4 +74,24 @@ p {
 .diagram-image {
     width: 100%;
     height: auto;
+}
+
+/* General video styles */
+video {
+    width: 100%;
+    height: auto;
+    margin-bottom: 50px;
+    display: block;
+}
+
+.portraitvideo {
+width: 30%;
+margin: auto;
+margin-bottom: 50px;
+}
+
+.about-video {
+    display: block;
+    width: 35%;
+    margin-bottom: 50px;
 }
