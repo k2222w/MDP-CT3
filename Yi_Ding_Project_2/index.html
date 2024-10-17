@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Blowing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Video Section -->
+    <div class="video-header">
+        <video autoplay loop id="background-video" controls>
+            <source src="assets/Final.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="floating-text">
+            <h1>Explore</h1>
+            <h2>Blowing</h2>
+        </div>
+    </div>
+
+    <!-- Content Sections (without background or rounded corners) -->
+    <section class="content-section">
+        <h3>Explore Fluid and Force Field</h3>
+        <p>Blender provides Gas or smoke simulations. These are a subset of the fluids system, and can be used for simulating collections of airborne solids, liquid particulates and gases, such as those that make up smoke. It simulates the fluid movement of air and generates animated Voxel textures representing the density, heat, and velocity of other fluids or suspended particles (e.g. smoke) which can be used for rendering.</p>
+        <div class="image-wrapper">
+            <img src="assets/1.png">
+        </div>
+        <p>Gases or smoke are emitted inside of a Domain from a mesh object or particle system. The smoke movement is controlled by airflow inside the domain, which can be influenced by Effector objects. Smoke will also be affected by the scene’s gravity and force fields. Airflow inside the domain can affect other physics simulations via the Fluid Flow force field.</p>
+        <div class="image-wrapper">
+            <img src="assets/2.png">
+        </div>
+        <p>The Wind force field gives a constant force in a single direction, along the force object’s local Z axis. By driving the Flow with this, we can achieve the Blowing effect.</p>
+        <div class="image-wrapper">
+            <img src="assets/wind.gif">
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h3>Explore Geometry Nodes</h3>
+        <p>Geometry Nodes is a system for modifying the geometry of an object with node-based operations. It can be accessed by adding a Geometry Nodes Modifier. The geometry node tree connected to a modifier is a Node Group. The geometry from the state before the modifier (the original geometry or the result of the previous modifier) will be passed to the Group Input node. Then the node group can operate on the geometry and pass an output to the Group Output node, where it will be passed to the next modifier. Simply put, my understand is Geometry Nodes allow you to generate models through programming logic instead of the traditional method of combining vertices, edges, and faces.</p>
+        <div class="image-wrapper">
+            <img src="assets/3.png">
+        </div>
+        <p>Simulation zones allow the result of one frame to influence the next one. That way even a set of simple rules can lead to complex results, with the passing of time. The most common type of them is physics simulation, with specific solvers for physical phenomena. By using these two features and following <a href="https://www.youtube.com/watch?v=e4QDhSYjj7U&list=WL&index=7" target="_blank">CGMatter's tutorial</a>, we can achieve a particle effect similar to blowing.</p>
+        <div class="image-wrapper">
+            <img src="assets/0001-0180.gif">
+        </div>
+    </section>
+
+    <!-- Two-column layout for Rigid Body and Blowing sections -->
+    <section class="content-section two-column">
+        <div class="text-column">
+            <h3>Explore Rigid Body</h3>
+            <p>The rigid body simulation can be used to simulate the motion of solid objects. It affects the position and orientation of objects and does not deform them. This also means that by adding rigid body properties to objects, they can be affected by the wind field, simulating a realistic blowing effect.</p>
+        </div>
+        <div class="image-column">
+            <img src="assets/4.png">
+        </div>
+    </section>
+
+    <section class="content-section two-column">
+        <div class="text-column">
+            <h3>How to Perform Blowing</h3>
+            <p>The first form I thought of is the wind tunnel test for cars, where visible wind is blown onto the car to test its aerodynamics. Since the action of blowing often refers to wind, my idea is to use this form of wind tunnel testing to visualize the wind force and show the impact it has on objects in the scene.</p>
+        </div>
+        <div class="image-column">
+            <img src="assets/5.png">
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h3>Process to Final Deliverable</h3>
+        <p>Since my theme will include the element of a car, the first thing I need to do is find some car resources online and convert them into usable formats. For example, in this situation, it’s best to merge all the car parts into one object to ensure they move as a whole. Additionally, I will add a Rigid Body to the car body so it can be influenced by external forces.</p>
+        <div class="image-wrapper">
+            <img src="assets/car.gif">
+        </div>
+        <div class="image-wrapper">
+            <img src="assets/6.png">
+        </div>
+        <p>The next step is to integrate everything together. Here, I created a demo video to showcase and review the project at its midway point. You can see that I added another car to the scene to collide with the first one, enhancing the visual effect of the impact caused by the wind. The feedback I received was to cover the entire scene with fog and have the wind blow the fog instead of just a few puffs of smoke blowing forward. In addition, improving the scene and making the animation take place in a complete environment will enhance immersion, allowing the audience to better experience the sensation of "blowing."</p>
+        <div class="image-wrapper">
+            <img src="assets/demo.gif">
+        </div>
+        <div class="image-wrapper">
+            <img src="assets/7.png">
+        </div>
+    </section>
+</body>
+</html>

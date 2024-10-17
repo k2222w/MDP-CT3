@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #e2e2e2;
+}
+
+.video-header {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+#background-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+
+.floating-text {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    z-index: 1;
+}
+
+.floating-text h1 {
+    font-family: "Bungee Hairline", sans-serif;
+    font-size: 64px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.floating-text h2 {
+    font-family: "Bungee Hairline", sans-serif;
+    font-size: 200px;
+    color: #ffffff;
+}
+
+.content-section {
+    width: 80%;
+    margin:200px auto;
+}
+
+.content-section h3 {
+    font-family: "Bungee Hairline", sans-serif;
+    font-size: 60px;
+    color: #333;
+    margin-bottom: 55px;
+}
+
+.content-section p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 55px;
+}
+
+.image-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 55px;
+}
+
+.image-wrapper img {
+    width: 100%;
+}
+
+.two-column {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.text-column {
+    flex: 1;
+}
+
+.image-column {
+    flex: 1;
+}
+
+.image-column img {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .image-wrapper {
+        flex-direction: column;
+    }
+
+    .image-wrapper img {
+        width: 100%;
+    }
+
+    .two-column {
+        flex-direction: column;
+    }
+}
