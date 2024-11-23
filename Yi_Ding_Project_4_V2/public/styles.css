@@ -1,0 +1,166 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color:#252628;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px;
+}
+
+label {
+  color: white;
+}
+
+input {
+  background-color: #252628;
+}
+
+/* Container for the content */
+.container {
+  background-color: #4E5054;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Title styling */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #F92E48;
+}
+
+/* Input group styling */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.input-group input:focus {
+  border-color: #F92E48;
+}
+
+/* Button styling */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #F92E48;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #B82739;
+}
+
+/* Output styling */
+#output {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #252628;
+  border: 1px solid black;
+  border-radius: 4px;
+  font-size: 16px;
+  color: white;
+}
+
+#output strong {
+  font-weight: bold;
+  color: white;
+}
+
+
+.editor {
+  margin-top: 20px;
+  background-color: #252628;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+.editor h2 {
+  margin-bottom: 10px;
+  color: white;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  resize: vertical;
+}
+
+textarea:focus {
+  border-color: #F92E48;
+}
+
+button {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.documentation-link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-decoration: none;
+  color: #F92E48;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #f9f9f9;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.documentation-link:hover {
+  background-color: #F92E48;
+  color: #fff;
+  text-decoration: none;
+}
+
+#musicOutputSection {
+  margin-top: 20px;
+  background-color: #252628;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid black;
+  color: white;
+}
