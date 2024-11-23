@@ -37,9 +37,22 @@
         <section class="second-section">
             <h2 class="left-title">README</h2>
             <div class="right-content">
-                <p>Download the <a href="https://github.com/k2222w/MDP-CT3">Yi_Ding_Project_4_V2</a>. Open it in VS
-                    Code,
-                    Install dependencies: npm install, and then Start the project: npm run dev</p>
+                <p>1. Download the <a href="https://github.com/k2222w/MDP-CT3">Yi_Ding_Project_4_V2</a>.<br>
+                    2. Open it in VS Code<br>
+                    3. Install dependencies: npm install<br>
+                    4. Start the project: npm run dev<br>
+                    5. Head over to <a href="https://suno.com/">app.suno.ai</a> using your browser.<br>
+                    6. Open up the browser console: hit F12 or access the Developer Tools.<br>
+                    7. Navigate to the Network tab.<br>
+                    8. Give the page a quick refresh.<br>
+                    9. Identify the request that includes the keyword client?_clerk_js_version.<br>
+                    10. Click on it and switch over to the Header tab.<br>
+                    11. Locate the Cookie section, hover your mouse over it, and copy the value of the Cookie.<br>
+                    12. Create a .env file in root file and type SUNO_COOKIE=your-cookie<br>
+                    13. Visit the http://localhost:3000/api/get_limit for testing, if it returns the credits
+                    information, it means the program is running normally<br>
+                    14. Time for explore
+                </p>
             </div>
         </section>
 
@@ -98,12 +111,12 @@
         <section class="second-section">
             <h2 class="left-title">Generating Sound</h2>
             <div class="right-content">
-            <img src="assets/process 10.png" alt="示例图片" class="image-content">
-            <img src="assets/process 11.png" alt="示例图片" class="image-content">
+                <img src="assets/process 10.png" alt="示例图片" class="image-content">
+                <img src="assets/process 11.png" alt="示例图片" class="image-content">
                 <p>Suno AI is an AI-powered music generator that allows users to create unique songs by inputting
                     prompts. I further integrated their official open-source API with my lyrics generator to expand its
                     functionality.</p>
-            <img src="assets/process 12.png" alt="示例图片" class="image-content">
+                <img src="assets/process 12.png" alt="示例图片" class="image-content">
                 <p>Once users have finished editing their lyrics, they can use them to generate an actual song. In
                     practice, the edited lyrics serve as the prompt, which is then input into the Suno AI API. Based on
                     this prompt, the API outputs a completely new song for the user.</p>
