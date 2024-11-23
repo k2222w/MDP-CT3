@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bungee+Hairline&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <main>
+
+        <!-- <section class="content-section">
+            <video controls class="video-content">
+                <source src="assets/Demo.mp4" type="video/mp4">
+            </video>
+        </section> -->
+
+        <div class="text-content">
+            <p>The Sound Generator is an text & music generator that allows users to create unique,
+                algorithmically generated sound. By fetching song lyrics from an online database based on user-selected
+                artists and titles, the generator processes the lyrics using N-grams—a probabilistic text generation
+                method.
+                Then users can input a keyword, and the generator generates new lyrics inspired by the original texts
+                while
+                incorporating the chosen keyword. Finally, base on the new lyrics, the generator can make a sound for
+                users.</p>
+        </div>
+
+        <section class="second-section">
+            <h2 class="left-title">README</h2>
+            <div class="right-content">
+                <p>Download the <a href="https://github.com/k2222w/MDP-CT3">Yi_Ding_Project_4_V2</a>. Open it in VS
+                    Code,
+                    Install dependencies: npm install, and then Start the project: npm run dev</p>
+            </div>
+        </section>
+
+        <!-- 第二部分内容 -->
+        <section class="second-section">
+            <h2 class="left-title">Fetching Data</h2>
+            <div class="right-content">
+                <img src="assets/process 1.png" alt="示例图片" class="image-content">
+                <img src="assets/process 2.png" alt="示例图片" class="image-content">
+                <p>The initial goal was to allow users to fetch song lyrics dynamically based on their chosen artist and
+                    song titles.
+                    I implemented a fetch request to interact with the Lyrics.ovh API. Each song title provided by the
+                    user was used to construct an individual API call.
+                </p>
+                <img src="assets/process 3.png" alt="示例图片" class="image-content">
+                <p>So when the user inputs the correct artist name and song title, the webpage will return the full
+                    lyrics of the corresponding song. During the testing phase at this stage, I discovered that the
+                    API’s database is not entirely complete, and sometimes data may be missing. However, most popular
+                    songs can be successfully fetched.</p>
+            </div>
+        </section>
+
+        <section class="second-section">
+            <h2 class="left-title">Generating Text</h2>
+            <div class="right-content">
+                <img src="assets/process 4.png" alt="示例图片" class="image-content">
+                <img src="assets/process 5.png" alt="示例图片" class="image-content">
+                <img src="assets/process 6.png" alt="示例图片" class="image-content">
+                <p>Next, I integrated the fetch function with the N-gram and Markov models introduced in class to
+                    deconstruct and analyze the fetched lyrics. This allowed me to use the lyrics as the language model
+                    for my text generator. Logically, with this language model, I could generate new lyrics in a similar
+                    style.<br>
+                    In practice, the class primarily covered text processing based on characters, rather than words. I
+                    tested both approaches. The results showed that while word-based text processing produces more
+                    logical sentences with significantly fewer errors, it is more suited for handling large datasets.
+                    For low-text samples like poems and lyrics, word-based processing creates a sparse language model
+                    that struggles to generate coherent sentences. Therefore, I ultimately opted for the character-based
+                    (N-gram) approach to process the original lyrics.
+                </p>
+                <img src="assets/process 7.png" alt="示例图片" class="image-content">
+                <p>Another observation I made during testing was that the more reference lyrics used, the greater the
+                    length and complexity of the generated lyrics. This is due to the inherent logic of how N-grams
+                    process text. Simply put, the larger the language model used for sentence generation, the higher the
+                    complexity of the generated sentences.</p>
+                <img src="assets/process 8.png" alt="示例图片" class="image-content">
+                <img src="assets/process 9.png" alt="示例图片" class="image-content">
+                <p>Finally, to enhance the usability of the webpage beyond merely generating text, I added a text editor
+                    at the bottom of the page. This editor allows users to save the most recently generated lyrics and
+                    make modifications directly. This way, users can continuously generate new lyrics based on different
+                    reference songs, compile all the generated lyrics into one place, and edit them to create a fully
+                    original, complete set of lyrics.
+                </p>
+            </div>
+        </section>
+
+        <section class="second-section">
+            <h2 class="left-title">Generating Sound</h2>
+            <div class="right-content">
+            <img src="assets/process 10.png" alt="示例图片" class="image-content">
+            <img src="assets/process 11.png" alt="示例图片" class="image-content">
+                <p>Suno AI is an AI-powered music generator that allows users to create unique songs by inputting
+                    prompts. I further integrated their official open-source API with my lyrics generator to expand its
+                    functionality.</p>
+            <img src="assets/process 12.png" alt="示例图片" class="image-content">
+                <p>Once users have finished editing their lyrics, they can use them to generate an actual song. In
+                    practice, the edited lyrics serve as the prompt, which is then input into the Suno AI API. Based on
+                    this prompt, the API outputs a completely new song for the user.</p>
+            </div>
+        </section>
+
+        <section class="second-section">
+            <h2 class="left-title">Reflection</h2>
+            <div class="right-content">
+                <p>In the world of text generation, Structural approaches rely on predefined grammar rules and syntax,
+                    which limits creativity and adaptability. They cannot handle unexpected inputs or contexts well. In
+                    this case, as language complexity grows, creating comprehensive rules becomes more and more
+                    difficult. Besides, the output will lack the nuanced fluidity of natural language.
+                    For probabilistic models like N-grams or Markov Models only consider limited context (e.g., the
+                    preceding few words),
+                    which can result in incoherent or nonsensical sentences. Also, as I said before, the quality depends
+                    heavily on the quantity and diversity of training data.
+                    Sparse or biased datasets lead to poor outputs.<br>
+                    Systematically converting text into data enables the rapid processing of textual information for
+                    computation, analysis, training, and text regeneration. However, as demonstrated in this project,
+                    the conversion process often results in the loss of nuances such as tone and underlying meaning,
+                    leading to an oversimplified interpretation of the text. Moreover, this brief project highlighted
+                    that generating meaningful and aesthetically pleasing text from data is far from easy. Understanding
+                    the underlying logic of generative text has further deepened my skepticism about the usability and
+                    authenticity of such generated outputs.<br>
+                    Machines are shaping human language towards a style that prioritizes efficiency, such as through
+                    tags, keywords, emojis, and codes. Tools like GPT also contribute to this trend by helping people
+                    make their writing more standardized, favoring efficiency over diversity. In this context,
+                    aesthetics often becomes the discarded element. From the perspective of language itself, I believe
+                    machine-generated language lacks aesthetics because it abandons the complexity and playfulness of
+                    text. However, when viewed abstractly from a non-linguistic perspective, these texts take on the
+                    characteristics of creative and experimental objects, offering a new form of aesthetic appreciation.
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
