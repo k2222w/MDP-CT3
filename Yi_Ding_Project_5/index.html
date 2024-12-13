@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shader Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="gallery-header">
+        <h1>Flower & Butterfly Gallery</h1>
+    </header>
+    <main class="gallery-container">
+        <div class="gallery-item"><img src="assets/1.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/2.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/3.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/4.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/5.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/6.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/7.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/8.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/9.gif" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/10.png" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/11.gif" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/12.gif" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/13.gif" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/14.gif" alt="Gallery Image 1"></div>
+        <div class="gallery-item"><img src="assets/15.png" alt="Gallery Image 1"></div>
+    </main>
+
+    <div class="process">
+        <p>In this exploration of shader graphics, I primarily used Shadertoy to create visual compositions. I chose
+            flowers and butterflies as the theme for this project because both elements exhibit symmetrical patterns,
+            making them suitable for learning the basics of shader programming. These highly repetitive shapes can often
+            be managed using trigonometric functions like sin and cos, as their corresponding pixels can be viewed as
+            cyclically arranged along the coordinate axis.
+
+            <br><br>Another function I frequently used in this project is smoothstep, which is often employed to achieve
+            smooth interpolation. For instance, it can smoothly transition color values during shader calculations,
+            creating gradient effects, or be applied to shapes in a similar way. In most of the displayed graphics,
+            smoothstep was used to generate oval shapes. Additionally, I experimented with iTime to create several
+            dynamic butterfly animations.
+
+            <br><br>I also explored the Shadertoy community and came across some inspiring works, such as Philippe
+            Desgranges’ sakura (cherry blossom) creation. I iterated on his original work, modifying it to create a
+            beautiful effect of falling flower petals.</p>
+    </div>
+
+    <!-- Modal for Enlarged Image -->
+    <div class="modal" id="imageModal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage" alt="Enlarged Image">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
