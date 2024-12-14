@@ -4,57 +4,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shader Gallery</title>
+    <title>Vertical Image & Text Layout</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <header class="gallery-header">
-        <h1>Flower & Butterfly Gallery</h1>
+    <header class="header">
+        <h1>Flowers & Butterflies Gallery</h1>
     </header>
-    <main class="gallery-container">
-        <div class="gallery-item"><img src="assets/1.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/2.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/3.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/4.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/5.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/6.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/7.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/8.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/9.gif" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/10.png" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/11.gif" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/12.gif" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/13.gif" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/14.gif" alt="Gallery Image 1"></div>
-        <div class="gallery-item"><img src="assets/15.png" alt="Gallery Image 1"></div>
+
+    <main class="content">
+        <div class="text">
+            <p>
+                In this exploration of shader graphics, I primarily used Shadertoy to create visual compositions. I
+                chose
+                flowers and butterflies as the theme for this project because both elements exhibit symmetrical
+                patterns,
+                making them suitable for learning the basics of shader programming. These highly repetitive shapes can
+                often
+                be managed using trigonometric functions like sin and cos, as their corresponding pixels can be viewed
+                as
+                cyclically arranged along the coordinate axis.
+
+                <br><br>Another function I frequently used in this project is smoothstep, which is often employed to
+                achieve
+                smooth interpolation. For instance, it can smoothly transition color values during shader calculations,
+                creating gradient effects, or be applied to shapes in a similar way. In most of the displayed graphics,
+                smoothstep was used to generate oval shapes. Additionally, I experimented with iTime to create several
+                dynamic butterfly animations.
+
+                <br><br>I also explored the Shadertoy community and came across some inspiring works, such as Philippe
+                Desgranges’ sakura (cherry blossom) creation. I iterated on his original work, modifying it to create a
+                beautiful effect of falling flower petals.
+            </p>
+        </div>
+        <!-- Section 1 -->
+        <section class="section">
+            <img src="assets/1.png" alt="A beautiful scene" class="image">
+            <img src="assets/3.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr1&3.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    Using abs(sin()) to create flower petals. Using smoothstep to control the shape.
+                </p>
+            </div>
+            <img src="assets/2.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr2.png" alt="A beautiful scene" class="image">
+            <img src="assets/5.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr5.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    Trying to add an additional layer to achieve more complex effects. Also, play with sin and cos.
+                </p>
+            </div>
+            <img src="assets/4.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr4.png" alt="A beautiful scene" class="image">
+            <img src="assets/6.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr6.png" alt="A beautiful scene" class="image">
+            <img src="assets/7.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr7.png" alt="A beautiful scene" class="image">
+            <img src="assets/8.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr8.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    Based on the previously developed graphics, I experimented with different combinations of shapes and
+                    colors. Similarly, I primarily used sin/cos and smoothstep functions.
+                </p>
+            </div>
+            <img src="assets/9.gif" alt="A beautiful scene" class="image">
+            <img src="assets/pr9.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    This is Philippe Desgranges’ cherry blossom artwork. I analyzed the source code and identified parts
+                    similar to my previous explorations, such as controlling the number and shape of the petals. Based
+                    on this, I made modifications to the original work.
+                </p>
+            </div>
+            <img src="assets/10.png" alt="A beautiful scene" class="image">
+            <img src="assets/14.gif" alt="A beautiful scene" class="image">
+            <img src="assets/15.png" alt="A beautiful scene" class="image">
+            <img src="assets/pr10&15.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    Similar to the flowers, by overlaying different shapes, a butterfly-like figure can be formed. Here,
+                    I introduced the exp() function, which can be used to create the curved effect for the “wings.”
+                </p>
+            </div>
+            <img src="assets/11.gif" alt="A beautiful scene" class="image">
+            <img src="assets/pr11.png" alt="A beautiful scene" class="image">
+            <img src="assets/12.gif" alt="A beautiful scene" class="image">
+            <img src="assets/pr12.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    This work is inspired by Seyed Morteza Kamali’s butterfly. I retained its dynamic shape and made
+                    modifications to the colors, transforming the butterfly’s texture into a look resembling a “signal
+                    loss” effect.
+                </p>
+            </div>
+            <img src="assets/13.gif" alt="A beautiful scene" class="image">
+            <img src="assets/pr13.png" alt="A beautiful scene" class="image">
+            <div class="text">
+                <p>
+                    If we try switching perspectives, a dynamic butterfly in a shader could present an intriguing
+                    effect. Here, I used a rotation matrix to create a flat 3D effect, allowing control over the
+                    butterfly’s left and right wings.
+                </p>
+            </div>
+        </section>
     </main>
-
-    <div class="process">
-        <p>In this exploration of shader graphics, I primarily used Shadertoy to create visual compositions. I chose
-            flowers and butterflies as the theme for this project because both elements exhibit symmetrical patterns,
-            making them suitable for learning the basics of shader programming. These highly repetitive shapes can often
-            be managed using trigonometric functions like sin and cos, as their corresponding pixels can be viewed as
-            cyclically arranged along the coordinate axis.
-
-            <br><br>Another function I frequently used in this project is smoothstep, which is often employed to achieve
-            smooth interpolation. For instance, it can smoothly transition color values during shader calculations,
-            creating gradient effects, or be applied to shapes in a similar way. In most of the displayed graphics,
-            smoothstep was used to generate oval shapes. Additionally, I experimented with iTime to create several
-            dynamic butterfly animations.
-
-            <br><br>I also explored the Shadertoy community and came across some inspiring works, such as Philippe
-            Desgranges’ sakura (cherry blossom) creation. I iterated on his original work, modifying it to create a
-            beautiful effect of falling flower petals.</p>
-    </div>
-
-    <!-- Modal for Enlarged Image -->
-    <div class="modal" id="imageModal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="modalImage" alt="Enlarged Image">
-    </div>
-
-    <script src="script.js"></script>
 </body>
 
 </html>

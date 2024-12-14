@@ -1,89 +1,75 @@
 /* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    margin: 20;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-  }
-  
-  .gallery-header {
-    text-align: center;
-    padding: 20px 0;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .gallery-header h1 {
-    margin: 0;
-    font-size: 24px;
-    color: #555;
-  }
-  
-  .gallery-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 10px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-  }
-  
-  .gallery-item {
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-  }
-  
-  .gallery-item img {
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .gallery-item img:hover {
-    transform: scale(1.1);
-  }
 
-  .process {
-    margin: 100px;
-  }
-  
-  /* Modal Styles */
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 10;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8);
-  }
-  
-  .modal-content {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 10px;
-  }
-  
-  .close {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: #bbb;
-  }
+/* 全局样式 */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* 头部样式 */
+.header {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #2d3436;
+  color: #fff;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.header p {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* 内容区域样式 */
+.content {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* 每个段落样式 */
+.section {
+  margin-bottom: 40px;
+  text-align: center; /* 居中对齐 */
+}
+
+.image {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: auto;
+  margin-top: 20px;
+  display: block; /* 保证图片居中 */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.image:hover {
+  transform: scale(1.05); /* 鼠标悬停放大图片 */
+}
+
+.text {
+  margin-top: 20px; /* 图片和文字之间的间距 */
+}
+
+.text h2 {
+  font-size: 1.8rem;
+  color: #2d3436;
+  margin-bottom: 10px;
+}
+
+.text p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.8;
+}
