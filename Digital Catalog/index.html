@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stained Glass Catalog</title>
+    <style>
+        /* --- Le Labo 风格变量设定 --- */
+        :root {
+            /* Le Labo 标志性的复古纸张背景色 */
+            --bg-color: #e8e3dc;
+            /* 深黑色文字，不完全纯黑，更有质感 */
+            --text-color: #1b1b1b;
+            --secondary-text: #666;
+            /* 极简边框颜色 */
+            --border-color: #e5e5e5;
+            /* 占位图颜色 */
+            --placeholder-bg: #dcdcdc;
+
+            /* 字体设置 */
+            /* Le Labo 核心风格：等宽字体 (Typewriter style) */
+            --font-mono: 'Courier New', Courier, monospace;
+            /* 标题字体：Helvetica/Arial (参照你的截图标题风格) */
+            --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            /* 全局默认使用等宽字体 */
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- 容器 --- */
+        .container {
+            max-width: 1000px;
+            /* 限制最大宽度，保持优雅 */
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* --- 新增：全屏 Hero Banner 样式 --- */
+        .hero-banner {
+            position: relative;
+            /* 作为内部绝对定位元素的锚点 */
+            width: 100%;
+            /* 占据屏幕全宽 */
+            height: 70vh;
+            /* 高度设置为视口高度的 70%，你可以根据需要调整 (例如 500px 或 100vh) */
+            min-height: 400px;
+            /* 防止在手机横屏时太矮 */
+            overflow: hidden;
+            /* 确保图片不溢出 */
+            display: flex;
+            justify-content: center;
+            /* 水平居中 */
+            align-items: center;
+            /* 垂直居中 */
+            text-align: center;
+            background-color: #ccc;
+            /* 图片加载前的占位背景色 */
+        }
+
+        /* 背景图片 */
+        .hero-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 关键：保持比例填满，不拉伸变形 */
+            z-index: 0;
+            /* 放在最底层 */
+            /* 强烈建议：加一个深色滤镜，这样白色文字在亮色图片上也能看清 */
+            filter: brightness(0.7);
+        }
+
+        /* 文字覆盖层 */
+        .hero-text-overlay {
+            position: relative;
+            z-index: 1;
+            /* 确保在图片上面 */
+            color: white;
+            /* 文字变白色 */
+            padding: 20px;
+            /* 稍微加点文字阴影提升可读性 */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 标题样式 */
+        .hero-text-overlay h1 {
+            font-family: var(--font-sans);
+            font-size: 64px;
+            /* 字体可以比之前更大气一些 */
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        /* 副标题样式 */
+        .hero-text-overlay p {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            /* 字间距拉大一点更有高级感 */
+        }
+
+        /* --- 顶部标题区 --- */
+        /* header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        header h1 {
+            font-family: var(--font-sans);
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        } */
+
+        /* --- 顶部非对称图片网格 (Hero Grid) --- */
+        /* 参照截图：左边一上一下两张，右边一张长图 */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* 左右两列等宽 */
+            grid-template-rows: 350px 250px;
+            /* 定义行高 */
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .img-placeholder {
+            /* background-color: var(--placeholder-bg); */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* color: #999; */
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        /* 左上大图 */
+        .hero-item-1 {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        /* 左下横条图 */
+        .hero-item-2 {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        /* 右侧长图 (跨越两行) */
+        .hero-item-3 {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            height: 100%;
+        }
+
+        /* --- 中间文字段落 --- */
+        .intro-text {
+            max-width: 800px;
+            margin: 0 auto 100px auto;
+            /* 底部留白大一点 */
+            text-align: justify;
+            /* 两端对齐，符合印刷风格 */
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+
+        /* --- Collection 标题 --- */
+        .section-title {
+            text-align: center;
+            font-family: var(--font-sans);
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 50px;
+        }
+
+        /* --- 产品网格 (Product Grid) --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* 3列 */
+            gap: 100px 60px;
+            /* 行间距40px，列间距20px */
+        }
+
+        .product-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-img {
+            width: 100%;
+            /* 宽度跟随网格列宽，保持响应式 */
+            height: 300px;
+            /* 【重点】在这里修改你要固定的高度，比如 300px 或 400px */
+            /* background-color: var(--placeholder-bg); */
+            margin-bottom: 15px;
+            overflow: hidden;
+            /* 确保图片不会跑出框外 */
+            position: relative;
+            /* 为内部图片定位做准备 */
+        }
+
+        .product-info {
+            border-top: 1px solid #ddd;
+            /* Le Labo 常见的分割线 */
+            padding-top: 10px;
+        }
+
+        .product-name {
+            font-weight: 700;
+            /* font-style:italic; */
+            font-size: 22px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .product-detail {
+            font-size: 11px;
+            color: var(--secondary-text);
+            margin-bottom: 12px;
+            font-family: var(--font-mono);
+        }
+
+        /* .product-action {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            font-family: var(--font-mono);
+        }
+
+        .add-btn {
+            background: none;
+            border: none;
+            border-bottom: 1px solid transparent;
+            cursor: pointer;
+            padding: 0;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            transition: border-bottom 0.3s;
+        }
+
+        .add-btn:hover {
+            border-bottom: 1px solid black;
+        } */
+
+        /* --- 响应式适配 --- */
+        @media (max-width: 768px) {
+
+            .hero-banner {
+                height: 50vh;
+                /* 手机端高度稍微减小 */
+            }
+
+            .hero-text-overlay h1 {
+                font-size: 42px;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+                /* 手机端变为单列 */
+                grid-template-rows: auto;
+                height: auto;
+            }
+
+            .hero-item-3 {
+                grid-column: 1;
+                grid-row: auto;
+                height: 400px;
+                /* 给长图一个固定高度 */
+            }
+
+            .hero-item-1 {
+                height: 300px;
+            }
+
+            .hero-item-2 {
+                height: 150px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                /* 平板/手机显示2列 */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+                /* 小屏手机显示1列 */
+            }
+        }
+
+        /* --- 弹窗遮罩层 (背景变暗) --- */
+        .modal-overlay {
+            display: none;
+            /* 默认隐藏 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* 半透明黑色背景 */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+            /* 背景稍微模糊一点，更有高级感 */
+        }
+
+        /* --- 弹窗容器 --- */
+        .modal-container {
+            position: relative;
+            background: transparent;
+            padding: 20px;
+            max-width: 90%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* --- 关闭按钮 --- */
+        .close-btn {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            font-family: sans-serif;
+        }
+
+        /* --- 核心复刻：标签样式 --- */
+        .le-labo-label {
+            background-color: #dcdcd9;
+            /* 模仿贴纸的灰底色 */
+            width: 600px;
+            /* 标签宽度 */
+            border: 1px solid #111;
+            /* 外边框 */
+            font-family: 'Courier New', Courier, monospace;
+            /* 核心字体 */
+            color: #111;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            /* 给标签一点阴影立体感 */
+        }
+
+        /* 通用分界线 */
+        .label-section {
+            border-bottom: 1px solid #111;
+            padding: 10px 12px;
+        }
+
+        .label-section:last-child {
+            border-bottom: none;
+        }
+
+        /* 1. 头部 (SANTAL 33) */
+        .header-section h2 {
+            font-size: 28px;
+            font-weight: 800;
+            /* 加粗 */
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            /* 标题用无衬线体看起来更像原图 */
+            letter-spacing: 0.5px;
+        }
+
+        .header-section p {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* 2. 描述 (eau de parfum) */
+        .desc-section p {
+            font-size: 14px;
+            margin: 2px 0;
+            line-height: 1.4;
+        }
+
+        /* 3. 信息栏 (Labelled...) */
+        .info-section {
+            padding: 8px 12px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 6px;
+            font-size: 14px;
+            align-items: baseline;
+        }
+
+        .label-key {
+            width: 90px;
+            /* 左侧固定宽度 */
+            flex-shrink: 0;
+        }
+
+        .label-value {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        /* 4. 底部 (Made in USA) */
+        .footer-section {
+            font-size: 9px;
+            text-align: center;
+            padding: 6px 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero-banner">
+        <img src="/assets/001.JPG" alt="Hero Banner" class="hero-bg-img">
+
+        <div class="hero-text-overlay">
+            <h1>Stained Glass</h1>
+            <p>Kerwin Ding / 2025</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- <header>
+            <h1>Stained Glass</h1>
+            <p>Kerwin / 2025</p>
+        </header>
+
+        <div class="hero-grid">
+            <div class="img-placeholder hero-item-1">
+                <img src="/assets/05.png" style="width:100%; height:100%; object-fit: cover; display:block;">
+            </div>
+            <div class="img-placeholder hero-item-2">
+                <img src="/assets/01.jpg" style="width:100%; height:100%; object-fit: cover; display:block;">
+            </div>
+            <div class="img-placeholder hero-item-3">
+                <img src="/assets/04.png" style="width:100%; height:100%; object-fit: cover; display:block;">
+            </div>
+        </div> -->
+
+        <div class="intro-text">
+            As a decorative art form with a long history, stained glass can still be found in the corners of everyday
+            life today. In this course’s practice, I chose stained glass as a craft discipline to experience firsthand,
+            with the goal of learning the skill and recreating the beauty of this art form while also bringing in my
+            perspective as a media designer. Through this process, I aim to explore new modes of expression for stained
+            glass and to see what kinds of sparks can emerge when media design intersects with traditional aesthetics.
+        </div>
+
+        <h2 class="section-title">Collection</h2>
+
+        <div class="product-grid">
+
+            <div class="product-card">
+                <div class="product-img" data-title="Mondrian?" data-subtitle="Sep 23, 2025 / 2HRS"
+                    data-desc="To make it easier to start learning this skill, I picked a simple pattern as my starting point, but I still overestimated myself. The tools I bought online were not very useful, and cutting and soldering glass turned out to be much harder than I imagined. Instead of entering a state of flow, I ended up spending two frustrating hours.">
+                    <img src="/assets/1.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Mondrian?</div>
+                    <div class="product-detail">Date Created: Sep 23, 2025<br>Production Time: 2HRs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Star" data-subtitle="Sep 23, 2025 / 1HRS"
+                    data-desc="Good tools are very important. This time I switched to new tools and bought better glass, and everything started to go much more smoothly. I could begin trying to cut out some complex shapes, though failure was inevitable—I ruined quite a few pieces of glass. Soldering is still difficult, and I can’t achieve neat soldering points. However, overall, once I eliminated the frustrating external factors—namely the poor tools and materials—this skill still feels very enticing to explore.">
+                    <img src="/assets/2.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Star</div>
+                    <div class="product-detail">Date Created: Sep 23, 2025<br>Production Time: 1HR</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Broken Window" data-subtitle="Sep 25, 2025 / 4HRs"
+                    data-desc="At last, I began to see the shadow of the glass art I had envisioned. My technique also started to improve; although it still takes a lot of time to complete one piece, the process has clearly become much smoother. Throughout the whole workflow, I found myself able to settle down more while working. I wouldn’t say I entered a true state of flow, since I didn’t have that sudden feeling of snapping back to awareness, but I did become much calmer while doing it. On top of that, I finally started to figure out how to solder each piece of glass better.">
+                    <img src="/assets/3.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Broken Window</div>
+                    <div class="product-detail">Date Created: Sep 25, 2025<br>Production Time: 4HRs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Snowflake" data-subtitle="Oct 01, 2025 / 30MINs"
+                    data-desc="😌I was listening to presentations in Gradlab online class while I was working on this piece. I know this isn't a good idea, but due to time constraints and the fact that I didn't need to present anything this week, I worked on the stained glass while attending the class. Interestingly, this was the most focused I've ever been, perhaps even the closest I've ever been to a flow state. Even with people talking in the background, I was still able to complete it efficiently. And this piece is the one I'm most satisfied with.">
+                    <img src="/assets/5.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Snowflake</div>
+                    <div class="product-detail">Date Created: Oct 01, 2025<br>Production Time: 30MINs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Chirstmas Set" data-subtitle="Oct 02, 2025 / 1HR 40MINs"
+                    data-desc="I tried using glass grinder to grind a square to create the circle above, but the result was not ideal. Maybe next time I should try to cut out the desired shape as much as possible before grinding. 😎‍These three were officially completed after the Thesis Committee. Compared to the previous few days, it was much easier because finishing them that day meant there was nothing particularly urgent to do that week and I could get a short break. So I felt very relaxed when making this set.">
+                    <img src="/assets/4.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Chirstmas Set</div>
+                    <div class="product-detail">Date Created: Oct 02, 2025<br>Production Time: 1HR 40MINs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Flower Window Glass" data-subtitle="Oct 09, 2025 / 4HRs"
+                    data-desc="This week, I started experimenting with creating more complex shapes and patterns, and as expected, the results were far less refined. I found that planning how to cut the shapes you’ve already decided on is crucial when working on a glass sheet. I also realized that this is likely a more advanced skill, since shapes with large angles can’t be cut in a single attempt — they tend to break in the middle.">
+                    <img src="/assets/7.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Flower Window Glass</div>
+                    <div class="product-detail">Date Created: Oct 09, 2025<br>Production Time: 4HRs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Cross Window Glass" data-subtitle="Oct 15, 2025 / 4HRs"
+                    data-desc="I discovered that leaving wider gaps between each shape when cutting the glass makes it easier to plan how to cut them accurately later on. The benefit of this approach is that the resulting shapes also turn out more precise. In addition, this was my first attempt at completing a piece by dividing it into sections, and I found that doing so greatly reduced the psychological pressure I felt while working on it.">
+                    <img src="/assets/6.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Cross Window Glass</div>
+                    <div class="product-detail">Date Created: Oct 15, 2025<br>Production Time: 4HRs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Glass Crane" data-subtitle="Oct 16,2025 / 2HRS"
+                    data-desc="I started experimenting with creating three-dimensional pieces, and I hope that the direction of my final work will be to transform everyday objects — things that are not typically made of glass — into glass materials. Meanwhile, for this week’s workspace setup, I made some adjustments to my desk layout to make the making process more comfortable.">
+                    <img src="/assets/9.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Glass Crane</div>
+                    <div class="product-detail">Date Created: Oct 16,2025<br>Production Time: 2HRS</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Stained Glass Tool Case" data-subtitle="Oct 26, 2025 / 6HRs"
+                    data-desc="I think this is the most complex piece I’ve created so far. Its prototype appears to be an industrial object, as you can sense the use of a very structured framework. Due to technical limitations, I incorporated some new ideas of my own—for example, using wire as the frame to create a hollow effect, or adding extra copper foil to help solder two parts with gaps between them.
+                In addition, I made a new discovery: appreciating stained glass doesn’t have to be limited to the piece itself. When I placed it under sunlight, the reflection it cast on a surface was also beautiful. This might become a new direction for further exploration.">
+                    <img src="/assets/11.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Stained Glass Tool Case</div>
+                    <div class="product-detail">Date Created: Oct 26, 2025<br>Production Time: 6HRs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Jewelry Plate" data-subtitle="Oct 30, 2025 / 1HR 30MINs"
+                    data-desc="For this piece, I think the reason I finished it relatively quickly is, first, I had just enjoyed a really good dinner, so I felt re-energized. Second, the shapes of the components in this work are relatively freeform, so I didn’t have to worry about breaking a particular piece of glass or failing to achieve a specific pattern. That allowed me to complete the cutting process quickly and confidently.
+                However, I’m still exploring how to improve my soldering techniques for three-dimensional works like this.">
+                    <img src="/assets/10.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Jewelry Plate</div>
+                    <div class="product-detail">Date Created: Oct 30, 2025<br>Production Time: 1HR 30MINs</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Stained Glass Mirror" data-subtitle="Nov 06, 2025 / 2HRS"
+                    data-desc="I wanted to explore how stained glass could be integrated into everyday, functional contexts. In fact, mirrors—as a form of glass—are often used in stained glass works to enhance both their practicality and visual interest. For this week’s sample making, I chose to create a small mirror, while continuing to draw on traditional stained glass aesthetics.">
+                    <img src="/assets/8.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Stained Glass Mirror</div>
+                    <div class="product-detail">Date Created: Nov 06, 2025<br>Production Time: 2HRS</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-img" data-title="Flower Set" data-subtitle="Nov 20, 2025 / 3HRs"
+                    data-desc="To experiment with the possibility of an industrialized production process for stained glass—and to replicate multiple samples as precisely as possible—I chose to create a jewelry-like piece for this iteration. In handcrafted stained glass practice, fixing a template is a crucial step, as all glass pieces must be cut according to this template to ensure the final form can be properly assembled. Because of this step, even without relying on mechanical fabrication, the industrialization process of stained glass is actually relatively straightforward and well-defined. As long as a reusable template is created, multiple copies can be reproduced with a high degree of precision.">
+                    <img src="/assets/12.png" style="width:100%; height:100%; object-fit: contain; display:block;">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Flower Set</div>
+                    <div class="product-detail">Date Created: Nov 20, 2025<br>Production Time: 3HRs</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="labelModal" class="modal-overlay">
+        <div class="modal-container">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+
+            <div class="le-labo-label">
+                <div class="label-section header-section">
+                    <h2 id="modal-title">Mondrian?</h2>
+                    <p id="modal-subtitle">Sep 23, 2025 / 2HRS</p>
+                </div>
+
+                <div class="label-section desc-section">
+                    <p id="modal-desc">To make it easier to start learning this skill, I picked a simple pattern as my
+                        starting point,
+                        but I still overestimated myself. The tools I bought online were not very useful, and cutting
+                        and soldering glass turned out to be much harder than I imagined. Instead of entering a state of
+                        flow, I ended up spending two frustrating hours.</p>
+                </div>
+
+                <div class="label-section info-section">
+                    <div class="info-row">
+                        <span class="label-key">Labelled:</span>
+                        <span class="label-value">ArtCenter College of Design, MDP Studio</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    // 1. 获取弹窗相关的元素
+    const modal = document.getElementById('labelModal');
+    const modalTitle = document.getElementById('modal-title'); // 弹窗里的标题
+    const modalSubtitle = document.getElementById('modal-subtitle'); // 弹窗里的副标题
+    const modalDescription = document.getElementById('modal-desc');
+    const productImages = document.querySelectorAll('.product-img');
+
+    // 2. 给每个图片添加点击事件
+    productImages.forEach(div => {
+        div.style.cursor = 'pointer'; // 鼠标变小手
+
+        div.addEventListener('click', function () {
+            // --- 核心修改部分开始 ---
+
+            // 获取当前被点击图片上“藏”的数据
+            // 使用 || 符号是为了防止万一你忘了写，它会显示一个默认值
+            const titleText = this.getAttribute('data-title') || 'Stained Glass';
+            const subtitleText = this.getAttribute('data-subtitle') || 'Info';
+            const descText = this.getAttribute('data-desc') || 'Description';
+
+            // 把抓到的数据填进弹窗的文字里
+            modalTitle.innerText = titleText;
+            modalSubtitle.innerText = subtitleText;
+            modalDescription.innerText = descText;
+
+            // --- 核心修改部分结束 ---
+
+            // 显示弹窗
+            modal.style.display = 'flex';
+        });
+    });
+
+    // 3. 关闭弹窗的逻辑 (保持不变)
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+
+</html>
