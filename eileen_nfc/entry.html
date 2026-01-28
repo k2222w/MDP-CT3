@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Entry</title>
   <link rel="stylesheet" href="entry.css" />
+
+  <!-- Supabase JS (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -18,11 +21,11 @@
         <strong>System Info</strong>
         <span>t (tag_id): <span id="tag_id">NULL</span></span>
         <span>record_time: <span id="record_time">NULL</span></span>
-        <span>storage_key: <span id="storage_key">NULL</span></span>
+        <span>db_path: <span id="db_path">NULL</span></span>
       </div>
 
       <!-- =========================
-           STATE A: UNCLAIMED (FORM)
+           STATE A: UNCLAIMED
       ========================== -->
       <section id="state_unclaimed" class="state-block">
         <div class="section-title">Claim this tag</div>
@@ -38,17 +41,16 @@
           Confirm = claim this tag. Skip = claim without name.
         </div>
 
-        <!-- DEBUG -->
         <div class="debug">
           <div>DEBUG:</div>
           <div>name_value: <span id="debug_name">NULL</span></div>
           <div>action: <span id="debug_action">NONE</span></div>
-          <div>claimed_data: <span id="debug_data">NULL</span></div>
+          <div>message: <span id="debug_msg">NULL</span></div>
         </div>
       </section>
 
       <!-- =========================
-           STATE B: CLAIMED (VIEW)
+           STATE B: CLAIMED
       ========================== -->
       <section id="state_claimed" class="state-block hidden">
         <div class="section-title">This tag is already claimed</div>
@@ -71,10 +73,16 @@
         <div class="hint">
           New visitors can view the owner, but cannot overwrite it.
         </div>
+
+        <div class="debug">
+          <div>DEBUG:</div>
+          <div>action: <span id="debug_action_claimed">NONE</span></div>
+          <div>message: <span id="debug_msg_claimed">NULL</span></div>
+        </div>
       </section>
     </div>
 
-    <!-- ACTIONS (bottom) -->
+    <!-- ACTIONS -->
     <div class="entry-actions" id="actions_unclaimed">
       <button id="confirm_btn" class="btn primary">Confirm</button>
       <button id="skip_btn" class="btn secondary">Skip</button>
@@ -87,149 +95,231 @@
   </div>
 
   <script>
-    /* =========================
-       1) READ URL + SYSTEM DATA
-    ========================== */
+    /* =========================================================
+       0) SUPABASE CONFIG (REPLACE THESE)
+    ========================================================== */
+    const SUPABASE_URL = "https://jtccayxyxuopkwdrrbmg.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AZC4PkZEzTY_n5lx3GLasA_Qc4sg-bc";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* =========================================================
+       1) URL + SYSTEM DATA
+    ========================================================== */
     const params = new URLSearchParams(window.location.search);
-    const tagId = params.get('t'); // e.g. TAG001
+    const tagId = params.get('t');                 // e.g. TAG001
     const recordTime = new Date().toISOString();
 
     document.getElementById('tag_id').innerText = tagId || 'UNDEFINED';
     document.getElementById('record_time').innerText = recordTime;
+    document.getElementById('db_path').innerText = tagId ? `tags/${tagId}` : 'tags/UNDEFINED';
 
-    // localStorage key (one per tag)
-    const storageKey = tagId ? `tag:${tagId}` : 'tag:UNDEFINED';
-    document.getElementById('storage_key').innerText = storageKey;
-
-    /* =========================
-       2) UI REFS
-    ========================== */
+    /* =========================================================
+       2) UI REFERENCES
+    ========================================================== */
     const stateUnclaimed = document.getElementById('state_unclaimed');
     const stateClaimed = document.getElementById('state_claimed');
-
     const actionsUnclaimed = document.getElementById('actions_unclaimed');
     const actionsClaimed = document.getElementById('actions_claimed');
 
     const nameInput = document.getElementById('name_input');
 
-    const debugName = document.getElementById('debug_name');
-    const debugAction = document.getElementById('debug_action');
-    const debugData = document.getElementById('debug_data');
+    const confirmBtn = document.getElementById('confirm_btn');
+    const skipBtn = document.getElementById('skip_btn');
+    const continueBtn = document.getElementById('continue_btn');
 
     const claimedOwnerName = document.getElementById('claimed_owner_name');
     const claimedAt = document.getElementById('claimed_at');
     const claimedMode = document.getElementById('claimed_mode');
 
-    const confirmBtn = document.getElementById('confirm_btn');
-    const skipBtn = document.getElementById('skip_btn');
-    const continueBtn = document.getElementById('continue_btn');
+    const debugName = document.getElementById('debug_name');
+    const debugAction = document.getElementById('debug_action');
+    const debugMsg = document.getElementById('debug_msg');
 
-    /* =========================
-       3) HELPERS
-    ========================== */
-    function readClaim() {
-      try {
-        const raw = localStorage.getItem(storageKey);
-        return raw ? JSON.parse(raw) : null;
-      } catch (e) {
-        return null;
-      }
+    const debugActionClaimed = document.getElementById('debug_action_claimed');
+    const debugMsgClaimed = document.getElementById('debug_msg_claimed');
+
+    /* =========================================================
+       3) VIEW HELPERS
+    ========================================================== */
+    function setHidden(el, hidden) {
+      if (!el) return;
+      el.classList.toggle('hidden', !!hidden);
     }
 
-    function writeClaim(data) {
-      localStorage.setItem(storageKey, JSON.stringify(data));
-    }
+    function setLoading(isLoading) {
+      if (confirmBtn) confirmBtn.disabled = !!isLoading;
+      if (skipBtn) skipBtn.disabled = !!isLoading;
+      if (continueBtn) continueBtn.disabled = !!isLoading;
 
-    function goHome() {
-      // keep tag_id in URL for home page
-      const target = tagId ? `/home?t=${encodeURIComponent(tagId)}` : '/home.html';
-      window.location.href = target;
-    }
-
-    function showClaimedView(claim) {
-      stateUnclaimed.classList.add('hidden');
-      actionsUnclaimed.classList.add('hidden');
-
-      stateClaimed.classList.remove('hidden');
-      actionsClaimed.classList.remove('hidden');
-
-      claimedOwnerName.innerText = claim.owner_name || 'UNKNOWN';
-      claimedAt.innerText = claim.claimed_at || 'NULL';
-      claimedMode.innerText = claim.claimed_mode || 'NULL';
+      if (debugAction && isLoading) debugAction.innerText = 'LOADING...';
+      if (debugActionClaimed && isLoading) debugActionClaimed.innerText = 'LOADING...';
     }
 
     function showUnclaimedView() {
-      stateUnclaimed.classList.remove('hidden');
-      actionsUnclaimed.classList.remove('hidden');
-
-      stateClaimed.classList.add('hidden');
-      actionsClaimed.classList.add('hidden');
+      setHidden(stateUnclaimed, false);
+      setHidden(actionsUnclaimed, false);
+      setHidden(stateClaimed, true);
+      setHidden(actionsClaimed, true);
     }
 
-    /* =========================
-       4) INITIAL STATE
-    ========================== */
-    // If no tagId, still allow viewing UI (but "claim" will be stored under UNDEFINED)
-    const existing = readClaim();
+    function showClaimedView(claim) {
+      setHidden(stateUnclaimed, true);
+      setHidden(actionsUnclaimed, true);
+      setHidden(stateClaimed, false);
+      setHidden(actionsClaimed, false);
 
-    if (existing && existing.is_claimed === true) {
-      showClaimedView(existing);
-    } else {
-      showUnclaimedView();
+      claimedOwnerName.innerText = claim?.owner_name ?? 'UNKNOWN';
+      claimedAt.innerText = claim?.claimed_at ?? 'NULL';
+      claimedMode.innerText = claim?.claimed_mode ?? 'NULL';
     }
 
-    /* =========================
-       5) EVENTS
-    ========================== */
-    confirmBtn.addEventListener('click', () => {
-      const nameValue = (nameInput.value || '').trim();
+    function goHome() {
+      const target = tagId
+        ? `home.html?t=${encodeURIComponent(tagId)}`
+        : 'home.html';
+      window.location.href = target;
+    }
 
-      const claimData = {
-        is_claimed: true,
-        tag_id: tagId || 'UNDEFINED',
-        owner_name: nameValue || 'Anonymous',
-        claimed_mode: 'CONFIRM',
-        claimed_at: recordTime
-      };
+    /* =========================================================
+       4) DB HELPERS
+    ========================================================== */
+    async function readClaimFromDB(tagId) {
+      const { data, error } = await supabase
+        .from('tags')
+        .select('tag_id, owner_name, claimed_mode, claimed_at')
+        .eq('tag_id', tagId)
+        .maybeSingle();
 
-      // DEBUG
-      debugName.innerText = nameValue || 'EMPTY→Anonymous';
-      debugAction.innerText = 'CONFIRM';
-      debugData.innerText = JSON.stringify(claimData);
+      if (error) return { data: null, error };
+      return { data: data || null, error: null };
+    }
 
-      // write once (but still prevent overwrite by checking again)
-      const check = readClaim();
-      if (check && check.is_claimed === true) {
-        showClaimedView(check);
+    async function claimToDB({ tagId, ownerName, claimedMode }) {
+      const { data, error } = await supabase
+        .from('tags')
+        .insert([{
+          tag_id: tagId,
+          owner_name: ownerName,
+          claimed_mode: claimedMode
+        }])
+        .select('tag_id, owner_name, claimed_mode, claimed_at')
+        .single();
+
+      return { data: data || null, error: error || null };
+    }
+
+    /* =========================================================
+       5) INIT
+    ========================================================== */
+    (async () => {
+      if (!tagId) {
+        showUnclaimedView();
+        debugAction.innerText = 'NO_TAG_ID';
+        debugMsg.innerText = 'Open as: entry.html?t=TAG001';
         return;
       }
 
-      writeClaim(claimData);
-      goHome();
+      setLoading(true);
+
+      const { data, error } = await readClaimFromDB(tagId);
+
+      setLoading(false);
+
+      if (error) {
+        showUnclaimedView();
+        debugAction.innerText = 'READ_ERROR';
+        debugMsg.innerText = error.message || String(error);
+        return;
+      }
+
+      if (data) {
+        showClaimedView(data);
+        debugActionClaimed.innerText = 'STATE: CLAIMED';
+        debugMsgClaimed.innerText = 'Read from DB';
+      } else {
+        showUnclaimedView();
+        debugAction.innerText = 'STATE: UNCLAIMED';
+        debugMsg.innerText = 'No record found in DB';
+      }
+    })();
+
+    /* =========================================================
+       6) EVENTS
+    ========================================================== */
+    confirmBtn.addEventListener('click', async () => {
+      if (!tagId) return;
+
+      const nameValue = (nameInput.value || '').trim();
+      const ownerName = nameValue || 'Anonymous';
+
+      debugName.innerText = ownerName;
+      debugAction.innerText = 'CONFIRM';
+      debugMsg.innerText = 'INSERT → tags';
+
+      setLoading(true);
+
+      const { data, error } = await claimToDB({
+        tagId,
+        ownerName,
+        claimedMode: 'CONFIRM'
+      });
+
+      if (!error && data) {
+        setLoading(false);
+        goHome();
+        return;
+      }
+
+      // Likely PK conflict (already claimed) → read existing and show
+      const { data: existing, error: readErr } = await readClaimFromDB(tagId);
+
+      setLoading(false);
+
+      if (existing) {
+        showClaimedView(existing);
+        debugActionClaimed.innerText = 'ALREADY_CLAIMED';
+        debugMsgClaimed.innerText = error?.message ? `INSERT_ERROR: ${error.message}` : 'INSERT_ERROR';
+        return;
+      }
+
+      debugAction.innerText = 'INSERT_FAILED';
+      debugMsg.innerText = (error?.message || readErr?.message || 'Unknown error');
     });
 
-    skipBtn.addEventListener('click', () => {
-      const claimData = {
-        is_claimed: true,
-        tag_id: tagId || 'UNDEFINED',
-        owner_name: 'SKIPPED',
-        claimed_mode: 'SKIP',
-        claimed_at: recordTime
-      };
+    skipBtn.addEventListener('click', async () => {
+      if (!tagId) return;
 
-      // DEBUG
       debugName.innerText = 'SKIPPED';
       debugAction.innerText = 'SKIP';
-      debugData.innerText = JSON.stringify(claimData);
+      debugMsg.innerText = 'INSERT → tags';
 
-      const check = readClaim();
-      if (check && check.is_claimed === true) {
-        showClaimedView(check);
+      setLoading(true);
+
+      const { data, error } = await claimToDB({
+        tagId,
+        ownerName: 'SKIPPED',
+        claimedMode: 'SKIP'
+      });
+
+      if (!error && data) {
+        setLoading(false);
+        goHome();
         return;
       }
 
-      writeClaim(claimData);
-      goHome();
+      const { data: existing, error: readErr } = await readClaimFromDB(tagId);
+
+      setLoading(false);
+
+      if (existing) {
+        showClaimedView(existing);
+        debugActionClaimed.innerText = 'ALREADY_CLAIMED';
+        debugMsgClaimed.innerText = error?.message ? `INSERT_ERROR: ${error.message}` : 'INSERT_ERROR';
+        return;
+      }
+
+      debugAction.innerText = 'INSERT_FAILED';
+      debugMsg.innerText = (error?.message || readErr?.message || 'Unknown error');
     });
 
     continueBtn.addEventListener('click', () => {
