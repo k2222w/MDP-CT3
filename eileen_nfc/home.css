@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'PP'; /* 你给这个字体起的名字，随便起 */
+    src: url('././fonts/PP\ Right\ Serif\ -\ Tall\ Regular.otf');      /* 这里写你本地字体文件的实际文件名 */
+    font-weight: normal;
+    font-style: normal;
+}
 /* 全局变量定义 */
 :root {
     --bg-color: #DCDDE1; /* 背景淡灰紫色 */
@@ -69,9 +75,9 @@ body {
 }
 
 .serial-number {
-    font-family: var(--font-display);
+    font-family: 'PP', serif;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: 400;
     /* 模拟极窄字体效果 */
     display: inline-block;
@@ -90,8 +96,8 @@ body {
 
 /* 标题样式 (About, Status) */
 .display-font {
-    font-family: var(--font-display);
-    font-size: 2.8rem;
+    font-family: 'PP', serif;
+    font-size: 6rem;
     font-weight: 400;
     color: var(--text-main);
     line-height: 1;
