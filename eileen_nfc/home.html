@@ -1,14 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Home</title>
-  <style>
-    
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ropewall UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="home.css">
 </head>
 <body>
-  This is a home page
+
+    <main class="mobile-container">
+        
+        <div class="card image-card">
+            <img src="../assets/001.jpg" alt="Rope Detail">
+            <div class="card-overlay">
+                <span class="serial-number">No. 001</span>
+            </div>
+        </div>
+
+        <div class="card content-card about-section">
+            <h1 class="display-font">About</h1>
+            <p class="body-text">
+                This is a collective ropewall made by many people over time. Each person weaves a small part and leaves. The piece continues to grow through others.
+            </p>
+        </div>
+
+        <div class="card content-card status-section">
+            <div class="status-header">
+                <h1 class="display-font">Status</h1>
+                <span class="display-font percentage">30%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+
+    </main>
+
 </body>
 </html>
