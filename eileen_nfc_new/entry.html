@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Growing Textiles — Entry</title>
+  <link rel="stylesheet" href="entry.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <main class="wrap">
+    <div class="top-note">NFC SCANNED SUCCESSFULLY</div>
+
+    <header class="brand">
+      <div class="title">Growing Textiles</div>
+      <div class="subtitle">ARCHIVAL RECORD</div>
+    </header>
+
+    <section class="card">
+      <div class="card-title">Knot #08</div>
+      <div class="card-sub">
+        Location: Art Center 950 South Campus<br/>
+        2nd Floor Hallway
+      </div>
+    </section>
+
+    <section class="form">
+      <div class="label">Leave your mark</div>
+
+      <input id="name_input" class="input" type="text" placeholder="Enter your name..." />
+
+      <button id="confirm_btn" class="btn primary">Weave into Archive</button>
+      <button id="anon_btn" class="btn link">Stay Anonymous</button>
+
+      <div class="debug" id="debug"></div>
+    </section>
+  </main>
+
+  <script>
+    // ====== Supabase config ======
+    const SUPABASE_URL = "https://jtccayxyxuopkwdrrbmg.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0Y2NheXh5eHVvcGt3ZHJyYm1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2Mjg0MTEsImV4cCI6MjA4NTIwNDQxMX0.NgFTzgE142pcZckgsXRLzu658UIoSaBrtGJy0-mezVM";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== UI refs ======
+    const nameInput = document.getElementById('name_input');
+    const confirmBtn = document.getElementById('confirm_btn');
+    const anonBtn = document.getElementById('anon_btn');
+    const debugEl = document.getElementById('debug');
+
+    function setDebug(msg) {
+      debugEl.textContent = msg || '';
+    }
+
+    function setLoading(loading) {
+      confirmBtn.disabled = loading;
+      anonBtn.disabled = loading;
+    }
+
+    function goRepo() {
+      window.location.href = "repository.html";
+    }
+
+    async function insertContribution({ name, isAnonymous }) {
+      // normalize
+      const finalName = (name || '').trim() || (isAnonymous ? 'Anonymous' : 'Anonymous');
+      const { error } = await supabaseClient
+        .from('contributions')
+        .insert([{ name: finalName, is_anonymous: !!isAnonymous }]);
+      if (error) throw error;
+    }
+
+    confirmBtn.addEventListener('click', async () => {
+      const name = (nameInput.value || '').trim();
+      setDebug('');
+      setLoading(true);
+
+      try {
+        await insertContribution({ name, isAnonymous: false });
+        goRepo();
+      } catch (e) {
+        console.error(e);
+        setDebug(`Error: ${e.message || e}`);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    anonBtn.addEventListener('click', async () => {
+      setDebug('');
+      setLoading(true);
+
+      try {
+        await insertContribution({ name: 'Anonymous', isAnonymous: true });
+        goRepo();
+      } catch (e) {
+        console.error(e);
+        setDebug(`Error: ${e.message || e}`);
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

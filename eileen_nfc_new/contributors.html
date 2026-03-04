@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Growing Textiles — Repository</title>
+  <link rel="stylesheet" href="contributors.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <main class="wrap">
+    <header class="brand">
+      <div class="title">Growing Textiles</div>
+      <div class="subtitle">ARCHIVAL RECORD</div>
+    </header>
+
+    <section class="notice">
+      <div class="notice-title">Your thread is woven.</div>
+      <div class="notice-sub">You are now part of this collective structure.</div>
+    </section>
+
+    <section class="list">
+      <div class="list-head">
+        <div class="list-head-title">COLLECTIVE CONTRIBUTORS</div>
+        <div class="list-line"></div>
+      </div>
+
+      <div id="rows" class="rows"></div>
+
+      <div class="spacer"></div>
+
+      <button id="back_btn" class="btn primary">Go to the Repository</button>
+    </section>
+
+    <div class="debug" id="debug"></div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://jtccayxyxuopkwdrrbmg.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0Y2NheXh5eHVvcGt3ZHJyYm1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2Mjg0MTEsImV4cCI6MjA4NTIwNDQxMX0.NgFTzgE142pcZckgsXRLzu658UIoSaBrtGJy0-mezVM";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const rowsEl = document.getElementById('rows');
+    const debugEl = document.getElementById('debug');
+    const backBtn = document.getElementById('back_btn');
+
+    function setDebug(msg){ debugEl.textContent = msg || ''; }
+
+    function formatDate(iso) {
+      // simple "Just now" / "Feb 12" / "Oct 28"
+      const d = new Date(iso);
+      const now = new Date();
+      const diff = Math.floor((now - d) / 1000);
+      if (diff < 60) return 'Just now';
+
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return `${months[d.getMonth()]} ${d.getDate()}`;
+    }
+
+    function rowTemplate(name, dateText, highlight=false){
+      const cls = highlight ? 'row name highlight' : 'row name';
+      return `
+        <div class="row">
+          <div class="${cls}">${escapeHtml(name)}</div>
+          <div class="row date">${escapeHtml(dateText)}</div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    async function loadList(){
+      setDebug('');
+      rowsEl.innerHTML = '';
+
+      const { data, error } = await supabaseClient
+        .from('contributions')
+        .select('id, name, created_at')
+        .order('created_at', { ascending: false })
+        .limit(200);
+
+      if (error) {
+        console.error(error);
+        setDebug(`Error: ${error.message || error}`);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        rowsEl.innerHTML = `<div class="empty">No records yet.</div>`;
+        return;
+      }
+
+      // Render
+      rowsEl.innerHTML = data.map((r, idx) => rowTemplate(r.name, formatDate(r.created_at), idx===0)).join('');
+    }
+
+    backBtn.addEventListener('click', () => {
+      // In your fig, this button could go to another page; for now, back to entry
+      window.location.href = "entry.html";
+    });
+
+    loadList();
+  </script>
+</body>
+</html>
