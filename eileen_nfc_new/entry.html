@@ -33,6 +33,9 @@
       <button id="confirm_btn" class="btn primary">Weave into Archive</button>
       <button id="anon_btn" class="btn link">Stay Anonymous</button>
 
+      <div class="label">If you’re only a viewer</div>
+      <button id="viewer_btn" class="btn primary">Go to the Archive</button>
+
       <div class="debug" id="debug"></div>
     </section>
   </main>
@@ -48,6 +51,7 @@
     const confirmBtn = document.getElementById('confirm_btn');
     const anonBtn = document.getElementById('anon_btn');
     const debugEl = document.getElementById('debug');
+    const viewerBtn = document.getElementById('viewer_btn');
 
     function setDebug(msg) {
       debugEl.textContent = msg || '';
@@ -100,6 +104,10 @@
       } finally {
         setLoading(false);
       }
+    });
+
+    viewerBtn.addEventListener('click', () => {
+      window.location.href = "index.html";
     });
   </script>
 </body>
