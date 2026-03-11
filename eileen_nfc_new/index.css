@@ -62,7 +62,8 @@
         }
 
         nav a:hover {
-            color: var(--brand-color);
+            color: #b05a48; /* 选中的红色下划线感 */
+            border-bottom: 2px solid #b05a48;
         }
 
         /* --- 瀑布流网格区域 --- */

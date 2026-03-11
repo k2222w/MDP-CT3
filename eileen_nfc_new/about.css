@@ -1,0 +1,157 @@
+@font-face {
+            font-family: 'PP-Regular'; 
+            src: url('././fonts/PPNikkeiMaru-Light.otf'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+@font-face {
+            font-family: 'Header'; 
+            src: url('././fonts/PP\ Right\ Serif\ -\ Tight\ Medium.otf'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+@font-face {
+            font-family: 'Bold'; 
+            src: url('././fonts/PPNikkeiMaru-Ultrabold.otf'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+/* 基础设置 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'PP-Regular';
+    background-color: #F3F1ED; /* 匹配底色 */
+    color: #333;
+}
+
+/* 导航栏 */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4vw 4vw 3vw 4vw;
+}
+
+.logo {
+    font-family: "Header";
+    font-size: 60px;
+    transform-origin: left center;
+}
+
+.logo a {
+    text-decoration: none;
+    color: #7a6652;
+}
+
+nav {
+            display: flex;
+            gap: 3.5vw;
+            margin-top: 1vw; 
+        }
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.3vw;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav a.active {
+    color: #b05a48; /* 选中的红色下划线感 */
+    border-bottom: 2px solid #b05a48;
+}
+
+nav a:hover {
+            color: #b05a48; /* 选中的红色下划线感 */
+            border-bottom: 2px solid #b05a48;
+        }
+
+/* 容器布局 */
+.about-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* 左右比例 */
+    gap: 60px;
+    padding: 0 50px 50px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* 左侧图片 */
+.page-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: normal;
+}
+
+.image-wrapper {
+    margin-bottom: 30px;
+}
+
+.image-wrapper img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* 右侧文本 */
+.content-text {
+    padding-top: 50px; /* 对应设计稿的对齐 */
+    font-size: 20px;
+}
+
+.intro {
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.text-block {
+    margin-bottom: 25px;
+}
+
+h3 {
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+ul {
+    padding-left: 20px;
+    margin-bottom: 25px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+strong {
+    font-family: 'Bold';
+}
+
+/* 响应式适配：手机端变为上下堆叠 */
+@media (max-width: 900px) {
+    .about-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+    
+    header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 8vw 6vw 4vw 6vw;
+                gap: 4vw;
+            }
+
+    .content-text {
+        padding-top: 0;
+    }
+
+    nav { gap: 6vw; margin-top: 0; }
+    nav a { font-size: 20px; }
+
+}
