@@ -89,9 +89,8 @@ html, body {
 /* 彩色大标题 */
 .hero-title {
     text-align: center;
-    margin-top: 100px;
+    margin-top: 30px;
     /* 给顶部留白 */
-    margin-bottom: 2vw;
     display: flex;
     justify-content: center;
     align-items: baseline;
@@ -114,7 +113,6 @@ html, body {
     font-family: "PP Header", serif;
     font-size: 64px;
     color: var(--text-color);
-    margin-top: 40px;
     margin-bottom: 60px;
 }
 

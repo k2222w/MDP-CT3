@@ -85,9 +85,8 @@ body {
 
 .hero-title {
     text-align: center;
-     margin-top: 100px;
+     margin-top: 30px;
     /* 给顶部留白 */
-    margin-bottom: 2vw;
     display: flex;
     justify-content: center;
     align-items: baseline;
@@ -107,9 +106,8 @@ body {
    主体内容区域 (Flexbox 布局)
    ========================================== */
 .about-container {
-    max-width: 1300px;
     margin: 0 auto;
-    padding: 0 50px 80px 50px;
+    padding: 0 4vw 80px 4vw;
     display: flex;
     flex-direction: column; /* 垂直排布不同行 */
     gap: 5vw; /* 行与行之间的间距 */
