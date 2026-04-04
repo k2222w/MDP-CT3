@@ -1,96 +1,135 @@
+/* ==========================================
+   字体与核心变量 (保持与前几页统一)
+   ========================================== */
 @font-face {
-            font-family: 'PP-Regular'; 
-            src: url('././fonts/PPNikkeiMaru-Light.otf'); 
-            font-weight: normal;
-            font-style: normal;
-        }
-
-@font-face {
-            font-family: 'Header'; 
-            src: url('././fonts/PP\ Right\ Serif\ -\ Tight\ Medium.otf'); 
-            font-weight: normal;
-            font-style: normal;
-        }
+    font-family: 'PP-Regular'; 
+    src: url('././fonts/PPNikkeiMaru-Regular.otf'); 
+    font-weight: normal;
+    font-style: normal;
+}
 
 @font-face {
-            font-family: 'Bold'; 
-            src: url('././fonts/PPNikkeiMaru-Ultrabold.otf'); 
-            font-weight: normal;
-            font-style: normal;
-        }
+    font-family: 'Header'; 
+    src: url('././fonts/PP\ Right\ Serif\ -\ Tall\ Regular.otf'); 
+    font-weight: normal;
+    font-style: normal;
+}
 
 
-/* 基础设置 */
+:root {
+    --bg-color: #F3F1EE;
+    /* 匹配设计图中的米白色 */
+    --blue: #2634B2;
+    /* 标题蓝色 */
+    --orange: #FF9F1C;
+    /* 标题橘色 */
+    --green: #696424;
+    /* 标题绿色 */   /* 标题绿色 */
+    --text-color: #3a3a3a;    
+}
+
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
     padding: 0;
-    font-family: 'PP-Regular';
-    background-color: #F3F1ED; /* 匹配底色 */
-    color: #333;
+    font-family: "PP-Regular", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* 导航栏 */
-header {
+/* ==========================================
+   顶部导航与大标题 (保持与前几页像素级统一)
+   ========================================== */
+.main-header {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    z-index: 100;
+}
+
+.desktop-nav {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4vw 4vw 3vw 4vw;
+    gap: 40px;
 }
 
-.logo {
-    font-family: "Header";
-    font-size: 60px;
-    transform-origin: left center;
-}
-
-.logo a {
+.desktop-nav a {
     text-decoration: none;
-    color: #7a6652;
+    color: var(--text-color);
+    font-size: 20px;
+    padding-bottom: 3px;
+    font-family: 'PP-Regular', sans-serif;
 }
 
-nav {
-            display: flex;
-            gap: 3.5vw;
-            margin-top: 1vw; 
-        }
-
-nav a {
-    text-decoration: none;
-    color: #333;
-    font-size: 1.3vw;
-    font-weight: 500;
-    transition: color 0.3s ease;
+.desktop-nav a.active {
+    border-bottom: 1.5px solid var(--text-color);
 }
 
-nav a.active {
-    color: #b05a48; /* 选中的红色下划线感 */
-    border-bottom: 2px solid #b05a48;
+.burger-btn {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 30px;
+    z-index: 100;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
 }
 
-nav a:hover {
-            color: #b05a48; /* 选中的红色下划线感 */
-            border-bottom: 2px solid #b05a48;
-        }
+.burger-btn span {
+    width: 22px; height: 1.5px;
+    background: var(--text-color);
+}
 
-/* 容器布局 */
+.hero-title {
+    text-align: center;
+     margin-top: 100px;
+    /* 给顶部留白 */
+    margin-bottom: 2vw;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.hero-title span {
+    font-family: "Header", serif;
+    font-size: 300px; 
+}
+
+.hero-title .blue { color: var(--blue); }
+.hero-title .orange { color: var(--orange); }
+.hero-title .green { color: var(--green); }
+
+
+/* ==========================================
+   主体内容区域 (Flexbox 布局)
+   ========================================== */
 .about-container {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr; /* 左右比例 */
-    gap: 60px;
-    padding: 0 50px 50px;
-    max-width: 1400px;
+    max-width: 1300px;
     margin: 0 auto;
+    padding: 0 50px 80px 50px;
+    display: flex;
+    flex-direction: column; /* 垂直排布不同行 */
+    gap: 5vw; /* 行与行之间的间距 */
 }
 
-/* 左侧图片 */
-.page-title {
-    font-size: 32px;
-    margin-bottom: 20px;
-    font-weight: normal;
+/* 通用行样式：Flexbox，顶对齐 */
+.row {
+    display: flex;
+    align-items: flex-start; /* 关键：顶部对齐，电脑端文字块顶部对齐图片顶部 */
+    gap: 6vw; /* 左右间距 */
 }
 
-.image-wrapper {
-    margin-bottom: 30px;
+/* 桌面端布局：左右横向排拍布 */
+.row-1, .row-2 {
+    flex-direction: row; 
+}
+
+/* 图片容器：桌面端占 1.3 份空间 */
+.row .image-wrapper {
+    flex: 1.3;
 }
 
 .image-wrapper img {
@@ -99,59 +138,110 @@ nav a:hover {
     object-fit: cover;
 }
 
-/* 右侧文本 */
-.content-text {
-    padding-top: 50px; /* 对应设计稿的对齐 */
-    font-size: 20px;
+/* 文字容器：桌面端占 1 份空间 */
+.row .content-text-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* 段落之间的整体间距 */
 }
 
-.intro {
-    font-weight: bold;
-    margin-bottom: 30px;
+/* 文本排版细节 (保持原样) */
+.intro-heading {
+    font-size: 24px;
+    margin: 0 0 10px 0;
 }
 
-.text-block {
-    margin-bottom: 25px;
+.text-block p {
+    font-size: 16px; /* 较小的精致正文字号 */
+    margin: 0;
 }
 
-h3 {
-    font-size: 16px;
-    font-style: italic;
-    margin-bottom: 10px;
+.sub-heading {
+    margin-bottom: 5px !important;
 }
 
-ul {
+.clean-list {
+    margin: 5px 0 0 0;
     padding-left: 20px;
-    margin-bottom: 25px;
+    font-size: 16px;
 }
 
-li {
-    margin-bottom: 5px;
+.clean-list li {
+    margin-bottom: 3px;
 }
 
-strong {
-    font-family: 'Bold';
+
+/* ==========================================
+   移动端全屏菜单 (保持与首页一致)
+   ========================================== */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-color);
+    z-index: 9999;
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 响应式适配：手机端变为上下堆叠 */
+.close-menu-btn {
+    position: absolute;
+    top: 30px; left: 30px;
+    font-size: 30px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.mobile-menu-content {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+}
+
+.mobile-menu-content a {
+    font-family: "Header", serif;
+    font-size: 110px; 
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+
+/* ==========================================
+   📱 移动端自适应重构
+   ========================================= */
 @media (max-width: 900px) {
-    .about-container {
-        grid-template-columns: 1fr;
-        padding: 20px;
+    .main-header { display: none; } /* 隐藏桌面导航 */
+    .burger-btn { display: flex; }  /* 显示汉堡菜单 */
+
+    .hero-title {
+        margin-top: 100px;
+        margin-bottom: 40px;
     }
     
-    header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 8vw 6vw 4vw 6vw;
-                gap: 4vw;
-            }
-
-    .content-text {
-        padding-top: 0;
+    .hero-title span {
+        font-size: 110px; 
     }
 
-    nav { gap: 6vw; margin-top: 0; }
-    nav a { font-size: 20px; }
+    .about-container {
+        padding: 0 30px 60px 30px;
+        gap: 40px; /* 手机端行间距小一些 */
+    }
 
+    /* 关键：手机端改为上下竖直排布 */
+    .row {
+        flex-direction: column; 
+        gap: 30px; /* 手机端上下图文间距 */
+    }
+
+    /* 调整文字大小使其在手机端更好阅读 */
+    .intro-heading {
+        font-size: 20px;
+    }
+
+    .text-block p, .clean-list {
+        font-size: 15px;
+    }
 }
