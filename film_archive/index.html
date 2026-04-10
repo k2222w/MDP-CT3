@@ -16,7 +16,7 @@
         --bg-panel: #0A0A0A;       
         
         --text-main: #FFFFFF;      
-        --text-muted: #A3A3A3;     /* 提亮灰色，极大增强深色背景下的可读性 */
+        --text-muted: #A3A3A3;     
         --text-ghost: #333333;     
         
         --accent-white: #FFFFFF;   
@@ -107,26 +107,24 @@
     }
     .home-fg-wrapper::-webkit-scrollbar { display: none; }
     
-    /* 居中计算：卡片宽度 400px，因此留白为 50vw - 200px */
     .home-fg-albums { display: flex; gap: 60px; padding: 0 calc(50vw - 200px); align-items: center; }
 
     .home-album-card {
-        flex: 0 0 400px; /* 固定宽度为 400px，与详情页图片完全一致 */
+        flex: 0 0 400px; 
         scroll-snap-align: center;
         display: flex; flex-direction: column; 
         cursor: pointer; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
-        opacity: 0.3; transform: scale(0.85); padding: 0; /* 移除 Padding，保证图片直接撑满 400px */
+        opacity: 0.3; transform: scale(0.85); padding: 0; 
     }
     .home-album-card.is-center { opacity: 1; transform: scale(1); }
 
     .img-wrapper { position: relative; width: 100%; aspect-ratio: 1/1; margin-bottom: 25px; }
 
-    .home-album-img { width: 100%; height: 100%; background-color: #111; }
+    .home-album-img { width: 100%; height: 100%; background-color: #111; border: 1px solid transparent; transition: border-color 0.6s ease; box-sizing: border-box; }
+    .home-album-card.is-center .home-album-img { border-color: #FFF; }
     
-    /* 修正为 Space Grotesk 并统一字号 */
     .home-album-title { font-family: var(--font-title); font-weight: 700; font-size: 24px; margin: 0 0 6px 0; text-transform: uppercase; color: var(--text-main); letter-spacing: 1.5px;}
     
-    /* 增加字重，提升 IBM Plex Mono 可读性 */
     .home-album-meta { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
 
     .minimal-timeline { height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 30px; flex-shrink: 0; position: relative;}
@@ -142,20 +140,25 @@
     #page-detail { flex-direction: column; } 
     .detail-main { flex: 1; display: flex; flex-direction: column; background-color: transparent; position: relative; min-width: 0; width: 100%; overflow-y: auto; overflow-x: hidden;}
     
-    .detail-top-nav { padding: 40px 60px 0 60px; flex-shrink: 0;}
-    .back-btn { background: none; border: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; padding: 0; transition: color 0.3s; text-transform: uppercase;}
+    /* 强制返回按钮不换行，解除宽度限制 */
+    .back-btn { white-space: nowrap; background: none; border: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; padding: 0; transition: color 0.3s; text-transform: uppercase; line-height: 1; margin-top: 0;}
     .back-btn:hover { color: var(--text-main); }
 
-    .detail-hero-section { flex: 1; display: flex; align-items: center; justify-content: center; gap: 80px; padding: 0 60px; min-height: 0; flex-shrink: 1; }
+    /* 三栏布局容器：控制最大宽度为 960px，确保左右边缘严格对齐 */
+    .detail-hero-section { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 60px; min-height: 0; flex-shrink: 1; margin-top: 40px; }
+    /* align-items: stretch 会使得 Sidebar 与主图等高 */
+    .detail-hero-inner { display: flex; align-items: stretch; justify-content: space-between; gap: 40px; width: 100%; max-width: 1080px; margin: 0 auto; }
     
-    /* 保持为主图 400px，与首页无缝对齐 */
+    /* 让返回按钮的容器自适应宽度并置于顶部 */
+    .detail-back-col { width: auto; flex-shrink: 0; display: flex; justify-content: flex-start; align-items: flex-start;}
+
     .detail-main-img-wrapper { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; }
-    .detail-main-img { width: 100%; height: 100%; background-color: #111; transition: background-image 0.4s ease-in-out; }
+    .detail-main-img { width: 100%; height: 100%; background-color: #111; }
     
-    .detail-sidebar { width: 320px; background-color: transparent; flex-shrink: 0; padding: 0; display: flex; flex-direction: column; justify-content: center;}
-    .meta-title-section { margin-bottom: 40px; }
+    /* Sidebar 设置为 flex column，利用 space-between 将标题和数据推向容器两端 */
+    .detail-sidebar { width: 320px; background-color: transparent; flex-shrink: 0; padding: 0; display: flex; flex-direction: column; justify-content: space-between;}
+    .meta-title-section { margin-bottom: 0; }
     
-    /* 修正为 Space Grotesk 并统一字号为 24px */
     .meta-title-section h2 { margin: 0 0 10px 0; font-family: var(--font-title); font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
     .meta-title-section p { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); margin: 0; letter-spacing: 1px;}
 
@@ -164,7 +167,8 @@
     .data-lbl { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
     .data-val { font-family: var(--font-mono); font-size: 14px; color: var(--text-main); text-align: right;}
 
-    .detail-filmstrip { height: auto; background-color: transparent; border-top: none; display: flex; align-items: center; justify-content: center; gap: 20px; padding: 40px 60px 60px 60px; overflow-x: auto; flex-shrink: 0; margin-top: auto;}
+    /* 底部居中的 Slide：调整内边距和最大宽度为 1080px (960+60+60)，使其内容左侧恰好与上方的 Back 按钮严格对齐 */
+    .detail-filmstrip { height: auto; background-color: transparent; border-top: none; display: flex; align-items: center; justify-content: flex-start; gap: 20px; padding: 40px 0px 60px 0px; overflow-x: auto; flex-shrink: 0; margin: auto auto 0 auto; width: 100%; max-width: 1080px; box-sizing: border-box;}
     .detail-thumb { flex: 0 0 140px; height: 93px; background-color: #111; cursor: pointer; transition: all 0.2s; opacity: 0.4; }
     .detail-thumb:hover { opacity: 0.8; }
     .detail-thumb.active { opacity: 1; border: 1px solid #FFF;}
@@ -181,7 +185,6 @@
         position: absolute; top: 40px; left: 60px; background: rgba(5,5,5,0.85); backdrop-filter: blur(5px);
         border: 1px solid #222; padding: 20px 25px; z-index: 50; display: flex; flex-direction: column; gap: 20px;
     }
-    /* 增加字重 */
     .map-filters-panel h4 { margin: 0 0 10px 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase;}
     
     .filter-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); transition: color 0.3s;}
@@ -213,7 +216,6 @@
     }
     .star-popup.visible { opacity: 1; pointer-events: auto; }
     .popup-img { width: 100%; height: 160px; background-color: #111; margin-bottom: 15px; }
-    /* 修正字体映射 */
     .popup-title { font-family: var(--font-title); font-size: 16px; margin: 0 0 5px 0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
     .popup-meta { font-family: var(--font-mono); font-weight: 500; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;}
 
@@ -225,43 +227,42 @@
         .home-album-card { flex: 0 0 320px; padding: 0; }
         .home-fg-albums { padding: 0 calc(50vw - 160px); gap: 40px;}
         
-        .detail-hero-section { gap: 40px; padding: 20px 40px; }
+        .detail-hero-section { padding: 0 40px; }
+        .detail-hero-inner { gap: 30px; max-width: 100%; }
+        .detail-filmstrip { padding: 40px 40px 60px 40px; max-width: 100%; }
+        .detail-back-col { width: auto; }
         .detail-main-img-wrapper { max-width: 320px; }
         .detail-sidebar { width: 280px; }
     }
 
     @media screen and (max-width: 768px) {
-        /* 将导航栏边距统一为 30px 对齐 */
-        .sys-nav { flex-direction: column; gap: 20px; padding: 50px 30px 0 30px; }
-        .nav-center { width: 100%; justify-content: center; gap: 25px; }
+        .sys-nav { flex-direction: column; gap: 20px; padding: 50px 30px 0 30px; align-items: flex-start; }
+        .nav-center { width: 100%; justify-content: flex-start; gap: 25px; }
         .nav-btn { font-size: 10px; }
         .nav-left, .nav-right { display: none; }
         
         .home-album-card { flex: 0 0 280px; padding: 0; }
         .home-fg-albums { padding: 0 calc(50vw - 140px); gap: 25px;}
         
-        /* 同步缩小移动端标题 */
         .home-album-title { font-size: 18px; }
         .meta-title-section h2 { font-size: 18px; }
         
-        /* 移除会导致层级覆盖和导航失效的强制 display 设置 */
         .detail-main { display: flex; flex-direction: column; overflow-y: auto; justify-content: flex-start; width: 100%; }
         
-        /* 统一设置左右 30px 边距，实现完美垂直网格对齐 */
-        .detail-top-nav { padding: 30px 30px 0 30px; margin-bottom: 20px; }
+        .detail-hero-section { padding: 0; margin-top: 30px; align-items: flex-start; }
+        .detail-hero-inner { flex-direction: column; gap: 25px; padding: 0 30px; width: 100%; box-sizing: border-box; }
         
-        .detail-hero-section { display: flex; flex-direction: column; gap: 30px; padding: 0 30px; min-height: auto; }
-        /* 移除最大宽度限制，让图片贴合左右 30px 的内边距 */
+        .detail-back-col { width: 100%; justify-content: flex-start; }
+        .back-btn { margin-top: 0; }
+        
         .detail-main-img-wrapper { max-width: 100%; width: 100%; margin: 0; }
         
-        /* 移除多余的 Padding，跟随父级的 30px 对齐 */
-        .detail-sidebar { width: 100%; padding: 0; margin: 0; box-sizing: border-box; }
-        .meta-title-section { margin-bottom: 30px; text-align: center; }
+        .detail-sidebar { width: 100%; padding: 0; margin: 0; box-sizing: border-box; justify-content: flex-start; }
+        .meta-title-section { margin-bottom: 20px; text-align: left; }
         
         .data-table { gap: 15px; }
         .data-val { max-width: 60%; word-break: break-word; text-align: right; } 
         
-        /* Filmstrip 同样应用左右 30px 边距，确保第一张缩略图左对齐 */
         .detail-filmstrip { height: auto; padding: 10px 30px 40px 30px; gap: 15px; margin: 0; justify-content: flex-start; width: 100%; box-sizing: border-box; }
         .detail-thumb { flex: 0 0 80px; height: 53px; }
         
@@ -314,30 +315,34 @@
         <!-- PAGE 02: FILM DETAIL (Accessed via clicking Home Cards) -->
         <div id="page-detail" class="page-view">
             <div class="detail-main">
-                <div class="detail-top-nav">
-                    <button class="back-btn" onclick="switchPage('home')">&larr; BACK TO ARCHIVE</button>
-                </div>
                 
                 <!-- Image & Metadata Center Stage -->
                 <div class="detail-hero-section">
-                    <div class="detail-main-img-wrapper">
-                        <div class="detail-main-img bg-img-cover" id="detailMainImg" style="background-image: url('000046.jpg');"></div>
-                    </div>
-
-                    <div class="detail-sidebar">
-                        <div class="meta-title-section">
-                            <h2 id="detailTitle">Nocturnal Veil</h2>
-                            <p id="detailRef">REF: 2024-SEP-01</p>
+                    <div class="detail-hero-inner">
+                        <!-- Desktop Back Button Col (Aligned left of image) -->
+                        <div class="detail-back-col">
+                            <button class="back-btn" onclick="switchPage('home')">&larr; BACK TO ARCHIVE</button>
                         </div>
                         
-                        <div class="data-table">
-                            <div class="data-row"><span class="data-lbl">TIMESTAMP</span><span class="data-val" id="detailDate">SEP 14, 2024</span></div>
-                            <div class="data-row"><span class="data-lbl">LOCATION</span><span class="data-val" id="detailLoc">PASADENA, CA</span></div>
-                            <div class="data-row"><span class="data-lbl">HARDWARE</span><span class="data-val" id="detailCam">LEICA M6</span></div>
-                            <div class="data-row"><span class="data-lbl">OPTICS</span><span class="data-val" id="detailLens">SUMMICRON 35MM F/2</span></div>
-                            <div class="data-row"><span class="data-lbl">EMULSION</span><span class="data-val" id="detailFilm">KODAK PORTRA 400</span></div>
-                            <div class="data-row"><span class="data-lbl">APERTURE</span><span class="data-val" id="detailAperture">f/2.8</span></div>
-                            <div class="data-row"><span class="data-lbl">SHUTTER</span><span class="data-val" id="detailShutter">1/60s</span></div>
+                        <div class="detail-main-img-wrapper">
+                            <div class="detail-main-img bg-img-cover" id="detailMainImg" style="background-image: url('000046.jpg');"></div>
+                        </div>
+
+                        <div class="detail-sidebar">
+                            <div class="meta-title-section">
+                                <h2 id="detailTitle">Nocturnal Veil</h2>
+                                <p id="detailRef">REF: 2024-SEP-01</p>
+                            </div>
+                            
+                            <div class="data-table">
+                                <div class="data-row"><span class="data-lbl">TIMESTAMP</span><span class="data-val" id="detailDate">SEP 14, 2024</span></div>
+                                <div class="data-row"><span class="data-lbl">LOCATION</span><span class="data-val" id="detailLoc">PASADENA, CA</span></div>
+                                <div class="data-row"><span class="data-lbl">HARDWARE</span><span class="data-val" id="detailCam">LEICA M6</span></div>
+                                <div class="data-row"><span class="data-lbl">OPTICS</span><span class="data-val" id="detailLens">SUMMICRON 35MM F/2</span></div>
+                                <div class="data-row"><span class="data-lbl">EMULSION</span><span class="data-val" id="detailFilm">KODAK PORTRA 400</span></div>
+                                <div class="data-row"><span class="data-lbl">APERTURE</span><span class="data-val" id="detailAperture">f/2.8</span></div>
+                                <div class="data-row"><span class="data-lbl">SHUTTER</span><span class="data-val" id="detailShutter">1/60s</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -429,16 +434,12 @@
         let homeInit = false;
         let homeData = []; 
         
-        // 【修改1】删除了原先硬编码的全局 imageLibrary
-
         function initHomeScroll() {
             const scroller = document.getElementById('homeFgScroller');
             const fgTrack = document.getElementById('homeFgTrack');
             const timelineText = document.getElementById('timelineText');
 
             if (!homeInit) {
-                // 【修改2】在你的 homeData 中新增 gallery 数组，放入对应文件夹的真实图片路径
-                // 注意：苹果电脑对文件后缀的大小写是敏感的（比如 .JPG 和 .jpg），请确保与你文件夹里一致
                 homeData = [
                     { 
                         title: "OAKVILLE MEMORY", cam: "LEICA M6", film: "PORTRA 400", loc: "OAKVILLE, CA", 
@@ -466,7 +467,7 @@
                             "././assets/album2/2-6.jpg",
                             "././assets/album2/2-7.jpg",
                             "././assets/album2/2-8.jpg",
-                            "././assets/album2/2-9.jpg", // 请根据你 album2 里的实际图片补充这个数组
+                            "././assets/album2/2-9.jpg" 
                         ]
                     },
                     { 
@@ -481,7 +482,7 @@
                             "././assets/album3/3-6.jpg",
                             "././assets/album3/3-7.jpg",
                             "././assets/album3/3-8.jpg",
-                            "././assets/album3/3-9.jpg", // 请补充 album3 里的实际图片
+                            "././assets/album3/3-9.jpg" 
                         ]
                     },
                     { 
@@ -503,7 +504,7 @@
                             "././assets/album4/4-13.jpg",
                             "././assets/album4/4-14.jpg",
                             "././assets/album4/4-15.jpg",
-                            "././assets/album4/4-16.jpg", // 请补充 album4 里的实际图片
+                            "././assets/album4/4-16.jpg" 
                         ]
                     }
                 ];
@@ -612,8 +613,6 @@
             const filmstrip = document.getElementById('detailFilmstrip');
             filmstrip.innerHTML = '';
             
-            // 【修改3】不再使用 imageLibrary，直接读取每个相册专属的 gallery 数组
-            // 如果这个相册忘记配 gallery，就默认显示封面那一张图作为兜底
             let thumbsData = albumData.gallery || [albumData.img];
 
             const fakeApertures = ["f/1.4", "f/2.8", "f/4", "f/5.6", "f/8"];
@@ -621,7 +620,6 @@
 
             thumbsData.forEach((img, i) => {
                 const thumb = document.createElement('div');
-                // 判断：如果当前缩略图是该相册的封面图，则默认高亮（active）
                 thumb.className = `detail-thumb ${img === albumData.img ? 'active' : ''} bg-img-cover`;
                 thumb.setAttribute('data-id', String(i+1).padStart(2,'0'));
                 thumb.style.backgroundImage = `url('${img}')`;
@@ -650,7 +648,6 @@
                 filmstrip.appendChild(thumb);
             });
 
-            // 详情页初始化时，直接寻找高亮（封面）那张图的数据填入
             const activeThumb = filmstrip.querySelector('.active') || filmstrip.children[0];
             document.getElementById('detailDate').textContent = activeThumb.dataset.time;
             document.getElementById('detailAperture').textContent = activeThumb.dataset.aperture;
