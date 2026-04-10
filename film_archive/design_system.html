@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYS.ARCHIVE // Design System</title>
+<style>
+    /* =========================================
+       FONTS & GLOBAL VARIABLES
+       ========================================= */
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+    :root {
+        --bg-base: #050505;        
+        --bg-panel: #0A0A0A;       
+        
+        --text-main: #FFFFFF;      
+        --text-muted: #666666;     
+        --text-ghost: #222222;     
+        
+        --accent-white: #FFFFFF;   
+        --accent-blue: #0055FF;
+        --accent-red: #E63946;
+        
+        --border-thin: 1px solid #1A1A1A;
+        --border-light: 1px solid #333333;
+        
+        --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --font-title: 'Space Grotesk', sans-serif;
+    }
+
+    body {
+        margin: 0; font-family: var(--font-sans); background-color: var(--bg-base);
+        color: var(--text-main); display: flex; height: 100vh; overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; }
+
+    /* =========================================
+       DESIGN SYSTEM LAYOUT
+       ========================================= */
+    .ds-sidebar {
+        width: 300px;
+        background-color: var(--bg-panel);
+        border-right: var(--border-thin);
+        padding: 50px 40px;
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+        flex-shrink: 0;
+    }
+
+    .ds-brand {
+        font-family: var(--font-title);
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 60px;
+        text-transform: uppercase;
+    }
+    .ds-brand span {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-muted);
+        font-weight: normal;
+        margin-top: 5px;
+        letter-spacing: 2px;
+    }
+
+    .ds-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .ds-nav-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: left;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.3s;
+    }
+    .ds-nav-btn:hover { color: var(--text-main); }
+    .ds-nav-btn.active { color: var(--text-main); font-weight: 600; }
+
+    .ds-main {
+        flex: 1;
+        overflow-y: auto;
+        padding: 60px 80px;
+        scroll-behavior: smooth;
+        position: relative;
+    }
+
+    .ds-view {
+        display: none;
+        animation: fadeIn 0.4s ease forwards;
+    }
+    .ds-view.active { display: block; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .ds-section {
+        margin-bottom: 80px;
+        border-bottom: var(--border-thin);
+        padding-bottom: 60px;
+    }
+    .ds-section:last-child { border-bottom: none; }
+
+    .ds-section-title {
+        font-family: var(--font-title);
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+    .ds-section-desc {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* =========================================
+       CATEGORY 3: FOUNDATIONAL ELEMENTS
+       ========================================= */
+    /* Colors */
+    .color-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 30px;
+    }
+    .color-card { display: flex; flex-direction: column; gap: 10px; }
+    .color-swatch {
+        width: 100%; aspect-ratio: 1/1;
+        border-radius: 2px;
+        border: 1px solid var(--border-light);
+    }
+    .color-name { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--text-main); }
+    .color-hex { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+
+    /* Typography (Updated to exact pixel sizes used in site) */
+    .type-row {
+        display: flex;
+        gap: 60px;
+        margin-bottom: 50px;
+        align-items: flex-start;
+    }
+    .type-info { flex: 1; }
+    .type-name { font-family: var(--font-mono); font-size: 12px; color: var(--accent-white); margin-bottom: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+    .type-usage { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); line-height: 1.8; }
+    .type-sample { flex: 2; display: flex; flex-direction: column; gap: 20px;}
+    
+    .ts-space-h1 { font-family: var(--font-title); font-size: 28px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+    .ts-space-h2 { font-family: var(--font-title); font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;}
+    
+    .ts-plex-val { font-family: var(--font-mono); font-size: 14px; font-weight: 400; color: var(--text-main); text-transform: uppercase;}
+    .ts-plex-nav { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px;}
+    .ts-plex-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
+
+    /* Images Style Grid */
+    .img-style-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+    }
+    .img-style-card {
+        width: 100%;
+        aspect-ratio: 3/2;
+        background-size: cover;
+        background-position: center;
+        background-color: #111;
+        border: 1px solid var(--border-light);
+    }
+    .img-style-label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 15px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* =========================================
+       CATEGORY 2: COMPONENTS & PATTERNS
+       ========================================= */
+    .comp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+    .comp-item {
+        background-color: var(--bg-panel);
+        border: var(--border-thin);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+    }
+    .comp-label {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        width: 100%;
+        border-bottom: var(--border-light);
+        padding-bottom: 10px;
+    }
+
+    /* Controls: Nav & Buttons */
+    .nav-btn {
+        background: transparent; border: none; color: var(--text-main);
+        font-family: var(--font-mono); font-size: 13px; font-weight: 500; letter-spacing: 3px;
+        cursor: pointer; padding: 0 0 8px 0; text-transform: uppercase; position: relative;
+    }
+    .nav-btn::after {
+        content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: var(--text-main);
+    }
+    
+    .add-album-btn {
+        background: transparent; border: 1px solid var(--text-main); color: var(--text-main);
+        font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px;
+        padding: 10px 20px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+    }
+    .add-album-btn:hover { background: var(--text-main); color: var(--bg-base); }
+
+    /* Controls: Filters & Inputs */
+    .filter-toggle { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--text-main); cursor: pointer;}
+    .filter-box { width: 14px; height: 14px; border: 1px solid var(--accent-blue); position: relative; flex-shrink: 0;}
+    .filter-box::after { content: ''; position: absolute; top: 2px; left: 2px; width: 8px; height: 8px; background-color: var(--accent-blue); }
+
+    .map-select {
+        background: transparent; border: none; border-bottom: 1px solid #555;
+        color: #FFF; font-family: var(--font-mono); font-size: 12px; 
+        outline: none; padding: 5px 0; width: 100%;
+    }
+
+    /* Core Component: Album Card */
+    .home-album-card { width: 220px; position: relative; padding: 20px; }
+    .img-wrapper { position: relative; width: 100%; aspect-ratio: 1/1; margin-bottom: 15px; }
+    .focus-bracket { position: absolute; width: 20px; height: 20px; border: 2px solid var(--accent-white); pointer-events: none; }
+    .fb-tl { top: -10px; left: -10px; border-right: none; border-bottom: none; }
+    .fb-tr { top: -10px; right: -10px; border-left: none; border-bottom: none; }
+    .fb-bl { bottom: -10px; left: -10px; border-right: none; border-top: none; }
+    .fb-br { bottom: -10px; right: -10px; border-left: none; border-top: none; }
+    .home-album-img { width: 100%; height: 100%; background-color: #222; }
+    .home-album-title { font-family: var(--font-sans); font-weight: 700; font-size: 14px; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 1px;}
+    .home-album-meta { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+
+    /* Core Component: Timeline */
+    .minimal-timeline { display: flex; flex-direction: column; align-items: center; width: 100%;}
+    .timeline-needle { width: 1px; height: 35px; background: #333; margin-bottom: 10px; }
+    .timeline-current { font-family: var(--font-mono); font-size: 13px; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase;}
+    .timeline-months { display: flex; gap: 20px; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 2px;}
+    .timeline-months span.dot { font-size: 6px; color: #333; }
+    .timeline-months span.active { color: var(--text-main); border-bottom: 1px solid var(--text-main); padding-bottom: 2px;}
+
+    /* Core Component: Metadata List */
+    .data-table { display: flex; flex-direction: column; gap: 15px; width: 100%;}
+    .data-row { display: flex; justify-content: space-between; align-items: baseline; } 
+    .data-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
+    .data-val { font-family: var(--font-mono); font-size: 14px; color: var(--text-main); text-align: right;}
+
+    /* Core Component: Filmstrip Thumb */
+    .detail-strip { display: flex; gap: 15px; }
+    .detail-thumb { width: 100px; height: 66px; background-color: #222; opacity: 0.4; }
+    .detail-thumb.active { opacity: 1; border: 1px solid #FFF;}
+
+</style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="ds-sidebar">
+        <div class="ds-brand">SYS.ARCHIVE<br><span>Design System</span></div>
+        
+        <div class="ds-nav">
+            <button class="ds-nav-btn active" onclick="switchTab('foundations')">3 / Foundations</button>
+            <button class="ds-nav-btn" onclick="switchTab('components')">2 / Components & Patterns</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="ds-main">
+        
+        <!-- =========================================================
+             3 - FOUNDATIONAL DESIGN ELEMENTS
+             ========================================================= -->
+        <div id="view-foundations" class="ds-view active">
+            
+            <div class="ds-section">
+                <div class="ds-section-title">Color Palette</div>
+                <div class="ds-section-desc">Strictly monochromatic core with stark, luminous accents for data visualization.</div>
+                
+                <div class="color-grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--bg-base);"></div>
+                        <span class="color-name">Base Black</span>
+                        <span class="color-hex">#050505</span>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--bg-panel);"></div>
+                        <span class="color-name">Panel Black</span>
+                        <span class="color-hex">#0A0A0A</span>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--text-ghost);"></div>
+                        <span class="color-name">Ghost Lines</span>
+                        <span class="color-hex">#222222</span>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--text-muted);"></div>
+                        <span class="color-name">Muted Text</span>
+                        <span class="color-hex">#666666</span>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--text-main);"></div>
+                        <span class="color-name">Pure White</span>
+                        <span class="color-hex">#FFFFFF</span>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--accent-blue);"></div>
+                        <span class="color-name">Map Cyan</span>
+                        <span class="color-hex">#0055FF</span>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--accent-red);"></div>
+                        <span class="color-name">Map Red</span>
+                        <span class="color-hex">#E63946</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ds-section">
+                <div class="ds-section-title">Typography</div>
+                <div class="ds-section-desc">Establishing hierarchy through extreme contrast in tracking and weight. Displayed in exact pixel sizes used across the platform.</div>
+                
+                <div class="type-row">
+                    <div class="type-info">
+                        <div class="type-name">Space Grotesk</div>
+                        <div class="type-usage">Primary Display / Titles<br>Weights: Bold (700)<br><br>Sizes Applied:<br>- 28px (Detail Page Titles)<br>- 18px (Home Gallery Cards)<br>- 16px (Map Popups)</div>
+                    </div>
+                    <div class="type-sample">
+                        <div class="ts-space-h1">28PX / NOCTURNAL VEIL</div>
+                        <div class="ts-space-h2">18PX / ALBUM TITLE</div>
+                    </div>
+                </div>
+
+                <div class="type-row">
+                    <div class="type-info">
+                        <div class="type-name">IBM Plex Mono</div>
+                        <div class="type-usage">Metadata / Controls / Labels<br>Weights: Regular (400), Medium (500)<br>Always Uppercase<br><br>Sizes Applied:<br>- 14px (Table Values)<br>- 13px (Navigation & Timeline)<br>- 12px (Control Elements)<br>- 11px (Metadata Labels)</div>
+                    </div>
+                    <div class="type-sample">
+                        <div class="ts-plex-val">14PX / SEP 14, 2024</div>
+                        <div class="ts-plex-nav">13PX / PERSONAL ARCHIVE</div>
+                        <div class="ts-plex-meta">11PX / LEICA M6 / PORTRA 400</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ds-section">
+                <div class="ds-section-title">Images Style</div>
+                <div class="ds-section-desc">Raw film scans with high contrast, deep blacks, and natural grain. Embedded directly against the pure black void without heavy bounding boxes.</div>
+                
+                <div class="img-style-grid">
+                    <div>
+                        <div class="img-style-card" style="background-image: url('000046.jpg');"></div>
+                        <div class="img-style-label">NOCTURNAL VEIL // Low Light Focus</div>
+                    </div>
+                    <div>
+                        <div class="img-style-card" style="background-image: url('3942-5944.jpg');"></div>
+                        <div class="img-style-label">NEON ASCENSION // High Contrast & Saturation</div>
+                    </div>
+                    <div>
+                        <div class="img-style-card" style="background-image: url('260114108739010028.jpg');"></div>
+                        <div class="img-style-label">ALPINE ECHO // Golden Hour Glow</div>
+                    </div>
+                    <div>
+                        <div class="img-style-card" style="background-image: url('260114108739020029.jpg');"></div>
+                        <div class="img-style-label">COASTAL VIEW // Daylight Clarity</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- =========================================================
+             2 - COMPONENT AND PATTERN LIBRARIES
+             ========================================================= -->
+        <div id="view-components" class="ds-view">
+            
+            <div class="ds-section">
+                <div class="ds-section-title">Controls & States</div>
+                <div class="ds-section-desc">Interaction patterns for navigation and data filtering.</div>
+                
+                <div class="comp-grid">
+                    <div class="comp-item">
+                        <div class="comp-label">Global Navigation Link</div>
+                        <div style="display: flex; gap: 30px;">
+                            <span class="nav-btn active">ACTIVE STATE</span>
+                            <span class="nav-btn" style="color: var(--text-muted); border: none;">INACTIVE</span>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-label">Ghost Action Button</div>
+                        <button class="add-album-btn">+ ADD NEW ALBUM</button>
+                        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 15px;">Hover: Inverts to Solid White.</p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-label">Map Filters (Custom Checkboxes)</div>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="filter-toggle" style="color: var(--accent-blue);">
+                                <div class="filter-box" style="border-color: var(--accent-blue);"><div style="position:absolute; top:2px; left:2px; width:8px; height:8px; background:var(--accent-blue);"></div></div> 
+                                CAMERA MODEL
+                            </div>
+                            <div class="filter-toggle" style="color: var(--accent-red);">
+                                <div class="filter-box" style="border-color: var(--accent-red);"><div style="position:absolute; top:2px; left:2px; width:8px; height:8px; background:var(--accent-red);"></div></div> 
+                                FILM STOCK
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-label">Dropdown Select</div>
+                        <select class="map-select">
+                            <option>LEICA M6</option>
+                            <option>HASSELBLAD 500CM</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ds-section">
+                <div class="ds-section-title">Core Components & Layouts</div>
+                <div class="ds-section-desc">The primary structural blocks used to display the photographic archive.</div>
+                
+                <div class="comp-grid">
+                    
+                    <!-- Album Card -->
+                    <div class="comp-item" style="grid-column: span 1;">
+                        <div class="comp-label">Gallery Focus Card (Home)</div>
+                        <div class="home-album-card">
+                            <div class="img-wrapper">
+                                <div class="focus-bracket fb-tl"></div><div class="focus-bracket fb-tr"></div>
+                                <div class="focus-bracket fb-bl"></div><div class="focus-bracket fb-br"></div>
+                                <div class="home-album-img" style="background-image: url('000046.jpg'); background-size: cover; background-position: center;"></div>
+                            </div>
+                            <div class="home-album-title">NOCTURNAL VEIL</div>
+                            <div class="home-album-meta">LEICA M6 / PORTRA 400</div>
+                        </div>
+                        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 15px; line-height: 1.5;">
+                            Padding separates the image from the outer Focus Brackets. Bracket thickness: 2px Solid White.
+                        </p>
+                    </div>
+
+                    <!-- Layout Column -->
+                    <div style="display: flex; flex-direction: column; gap: 40px;">
+                        
+                        <!-- Timeline -->
+                        <div class="comp-item">
+                            <div class="comp-label">Minimalist Timeline</div>
+                            <div class="minimal-timeline">
+                                <div class="timeline-needle"></div>
+                                <div class="timeline-current">2024 // SEPTEMBER</div>
+                                <div class="timeline-months">
+                                    <span>AUG</span>
+                                    <span class="dot">■</span>
+                                    <span class="active">SEP</span>
+                                    <span class="dot">■</span>
+                                    <span>OCT</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filmstrip -->
+                        <div class="comp-item">
+                            <div class="comp-label">Filmstrip Gallery (States)</div>
+                            <div class="detail-strip">
+                                <div class="detail-thumb active" style="background-image: url('000046.jpg'); background-size: cover;"></div>
+                                <div class="detail-thumb" style="background-image: url('3942-5944.jpg'); background-size: cover;"></div>
+                                <div class="detail-thumb" style="background-image: url('260114108739010028.jpg'); background-size: cover;"></div>
+                            </div>
+                            <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 15px; line-height: 1.5;">
+                                Inactive: 0.4 Opacity. Active: 1.0 Opacity + 1px Solid White Border.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Metadata Table -->
+                    <div class="comp-item" style="grid-column: span 2;">
+                        <div class="comp-label">Metadata Block Layout (Detail Page)</div>
+                        <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+                            <div class="data-table">
+                                <div class="data-row"><span class="data-lbl">TIMESTAMP</span><span class="data-val">SEP 14, 2024</span></div>
+                                <div class="data-row"><span class="data-lbl">LOCATION</span><span class="data-val">PASADENA, CA</span></div>
+                                <div class="data-row"><span class="data-lbl">HARDWARE</span><span class="data-val">LEICA M6</span></div>
+                                <div class="data-row"><span class="data-lbl">EMULSION</span><span class="data-val">KODAK PORTRA 400</span></div>
+                            </div>
+                        </div>
+                        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 30px; text-align: center; width: 100%;">
+                            Flexbox row layout with <code>justify-content: space-between</code>. No visible borders.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.ds-nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update views
+            document.querySelectorAll('.ds-view').forEach(view => view.classList.remove('active'));
+            document.getElementById('view-' + tabId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

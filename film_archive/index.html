@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYS.ARCHIVE // Personal & World Map</title>
+<style>
+    /* Fonts: Space Grotesk (Headers) & IBM Plex Mono (Data) */
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+    /* =========================================
+       01. DESIGN SYSTEM & VARIABLES
+       ========================================= */
+    :root {
+        --bg-base: #050505;        
+        --bg-panel: #0A0A0A;       
+        
+        --text-main: #FFFFFF;      
+        --text-muted: #A3A3A3;     /* 提亮灰色，极大增强深色背景下的可读性 */
+        --text-ghost: #333333;     
+        
+        --accent-white: #FFFFFF;   
+        --accent-blue: #0055FF;
+        --accent-red: #E63946;
+        
+        --border-thin: 1px solid #1A1A1A;
+        --border-light: 1px solid #333333;
+        
+        --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --font-title: 'Space Grotesk', sans-serif;
+    }
+
+    body {
+        margin: 0; font-family: var(--font-sans); background-color: var(--bg-base);
+        color: var(--text-main); display: flex; flex-direction: column;
+        height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased; position: relative;
+    }
+
+    /* Subdued film grain */
+    body::after {
+        content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.03; pointer-events: none; z-index: 9999;
+    }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; }
+    ::-webkit-scrollbar-thumb:hover { background: #666; }
+    
+    .bg-img-cover { background-size: cover; background-position: center; background-repeat: no-repeat; }
+
+    /* =========================================
+       02. GLOBAL NAVIGATION
+       ========================================= */
+    .sys-nav {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 40px 60px 0 60px; background-color: transparent; color: var(--text-main);
+        flex-shrink: 0; z-index: 1000; position: relative;
+    }
+
+    .nav-left { flex: 1; } 
+    .nav-center { display: flex; justify-content: center; gap: 40px; flex: 2; }
+    
+    .nav-btn {
+        background: transparent; border: none; color: var(--text-muted);
+        font-family: var(--font-mono); font-size: 13px;
+        font-weight: 500; letter-spacing: 3px;
+        cursor: pointer; padding: 0 0 8px 0; transition: all 0.3s;
+        text-transform: uppercase; position: relative; white-space: nowrap;
+    }
+    .nav-btn:hover, .nav-btn.active { color: var(--text-main); }
+    .nav-btn.active::after {
+        content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: var(--text-main);
+    }
+
+    .nav-right { flex: 1; display: flex; justify-content: flex-end; }
+    .add-album-btn {
+        background: transparent; border: 1px solid var(--text-main); color: var(--text-main);
+        font-family: var(--font-mono); font-size: 12px;
+        letter-spacing: 2px;
+        padding: 10px 20px; cursor: pointer; transition: all 0.3s; text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .add-album-btn:hover { background: var(--text-main); color: var(--bg-base); }
+
+    .view-container { flex: 1; position: relative; overflow: hidden; }
+    .page-view {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none;
+        background-color: var(--bg-base); flex-direction: column; animation: fadeView 0.5s ease forwards; opacity: 0;
+    }
+    .page-view.active { display: flex; }
+    @keyframes fadeView { to { opacity: 1; } }
+
+    /* =========================================
+       03. PAGE 01: PERSONAL ARCHIVE (HOME)
+       ========================================= */
+    #page-home .home-stage {
+        flex: 1; display: flex; flex-direction: column; position: relative; background-color: transparent;
+        justify-content: center; padding-top: 20px;
+    }
+
+    .home-fg-wrapper { 
+        width: 100%; display: flex; align-items: center; overflow-x: auto; 
+        scroll-snap-type: x mandatory; scrollbar-width: none; position: relative; z-index: 3; 
+    }
+    .home-fg-wrapper::-webkit-scrollbar { display: none; }
+    
+    /* 居中计算：卡片宽度 400px，因此留白为 50vw - 200px */
+    .home-fg-albums { display: flex; gap: 60px; padding: 0 calc(50vw - 200px); align-items: center; }
+
+    .home-album-card {
+        flex: 0 0 400px; /* 固定宽度为 400px，与详情页图片完全一致 */
+        scroll-snap-align: center;
+        display: flex; flex-direction: column; 
+        cursor: pointer; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+        opacity: 0.3; transform: scale(0.85); padding: 0; /* 移除 Padding，保证图片直接撑满 400px */
+    }
+    .home-album-card.is-center { opacity: 1; transform: scale(1); }
+
+    .img-wrapper { position: relative; width: 100%; aspect-ratio: 1/1; margin-bottom: 25px; }
+
+    .home-album-img { width: 100%; height: 100%; background-color: #111; }
+    
+    /* 修正为 Space Grotesk 并统一字号 */
+    .home-album-title { font-family: var(--font-title); font-weight: 700; font-size: 24px; margin: 0 0 6px 0; text-transform: uppercase; color: var(--text-main); letter-spacing: 1.5px;}
+    
+    /* 增加字重，提升 IBM Plex Mono 可读性 */
+    .home-album-meta { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+
+    .minimal-timeline { height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 30px; flex-shrink: 0; position: relative;}
+    .timeline-needle { width: 1px; height: 35px; background: #333; margin-bottom: 10px; }
+    .timeline-current { font-family: var(--font-mono); font-weight: 500; font-size: 13px; letter-spacing: 4px; color: var(--text-main); margin-bottom: 15px; text-transform: uppercase;}
+    .timeline-months { display: flex; gap: 30px; align-items: center; font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); letter-spacing: 2px;}
+    .timeline-months span.dot { font-size: 6px; color: #333; }
+    .timeline-months span.active { color: var(--text-main); border-bottom: 1px solid var(--text-main); padding-bottom: 2px;}
+
+    /* =========================================
+       04. PAGE 02: FILM DETAIL (Centered Gallery)
+       ========================================= */
+    #page-detail { flex-direction: column; } 
+    .detail-main { flex: 1; display: flex; flex-direction: column; background-color: transparent; position: relative; min-width: 0; width: 100%; overflow-y: auto; overflow-x: hidden;}
+    
+    .detail-top-nav { padding: 40px 60px 0 60px; flex-shrink: 0;}
+    .back-btn { background: none; border: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; padding: 0; transition: color 0.3s; text-transform: uppercase;}
+    .back-btn:hover { color: var(--text-main); }
+
+    .detail-hero-section { flex: 1; display: flex; align-items: center; justify-content: center; gap: 80px; padding: 0 60px; min-height: 0; flex-shrink: 1; }
+    
+    /* 保持为主图 400px，与首页无缝对齐 */
+    .detail-main-img-wrapper { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; }
+    .detail-main-img { width: 100%; height: 100%; background-color: #111; transition: background-image 0.4s ease-in-out; }
+    
+    .detail-sidebar { width: 320px; background-color: transparent; flex-shrink: 0; padding: 0; display: flex; flex-direction: column; justify-content: center;}
+    .meta-title-section { margin-bottom: 40px; }
+    
+    /* 修正为 Space Grotesk 并统一字号为 24px */
+    .meta-title-section h2 { margin: 0 0 10px 0; font-family: var(--font-title); font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+    .meta-title-section p { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); margin: 0; letter-spacing: 1px;}
+
+    .data-table { display: flex; flex-direction: column; gap: 20px; }
+    .data-row { display: flex; justify-content: space-between; align-items: baseline; } 
+    .data-lbl { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
+    .data-val { font-family: var(--font-mono); font-size: 14px; color: var(--text-main); text-align: right;}
+
+    .detail-filmstrip { height: auto; background-color: transparent; border-top: none; display: flex; align-items: center; justify-content: center; gap: 20px; padding: 40px 60px 60px 60px; overflow-x: auto; flex-shrink: 0; margin-top: auto;}
+    .detail-thumb { flex: 0 0 140px; height: 93px; background-color: #111; cursor: pointer; transition: all 0.2s; opacity: 0.4; }
+    .detail-thumb:hover { opacity: 0.8; }
+    .detail-thumb.active { opacity: 1; border: 1px solid #FFF;}
+
+
+    /* =========================================
+       05. PAGE 03: WORLD FILM MAP
+       ========================================= */
+    #page-map { background-color: #000; color: #FFF; } 
+    .map-container { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    #globe-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
+
+    .map-filters-panel {
+        position: absolute; top: 40px; left: 60px; background: rgba(5,5,5,0.85); backdrop-filter: blur(5px);
+        border: 1px solid #222; padding: 20px 25px; z-index: 50; display: flex; flex-direction: column; gap: 20px;
+    }
+    /* 增加字重 */
+    .map-filters-panel h4 { margin: 0 0 10px 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase;}
+    
+    .filter-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); transition: color 0.3s;}
+    .filter-toggle:hover { color: #FFF; }
+    .filter-toggle input[type="checkbox"] { display: none; }
+    .filter-box { width: 14px; height: 14px; border: 1px solid #555; position: relative; flex-shrink: 0;}
+    .filter-toggle input[type="checkbox"]:checked + .filter-box::after { content: ''; position: absolute; top: 2px; left: 2px; width: 8px; height: 8px; }
+    
+    .filter-toggle.blue input[type="checkbox"]:checked + .filter-box { border-color: var(--accent-blue); }
+    .filter-toggle.blue input[type="checkbox"]:checked + .filter-box::after { background-color: var(--accent-blue); }
+    .filter-toggle.blue:has(input[type="checkbox"]:checked) { color: var(--accent-blue); }
+
+    .filter-toggle.red input[type="checkbox"]:checked + .filter-box { border-color: var(--accent-red); }
+    .filter-toggle.red input[type="checkbox"]:checked + .filter-box::after { background-color: var(--accent-red); }
+    .filter-toggle.red:has(input[type="checkbox"]:checked) { color: var(--accent-red); }
+
+    .map-select {
+        background: transparent; border: none; border-bottom: 1px solid #555;
+        color: #FFF; font-family: var(--font-mono); font-size: 12px; 
+        margin-left: 5px; outline: none; cursor: pointer; padding: 2px 0;
+    }
+    .map-select option { background: #111; color: #FFF; }
+
+    .star-popup {
+        position: absolute; width: 250px; background: rgba(5, 5, 5, 0.95);
+        border: 1px solid #333; padding: 20px; color: #FFF;
+        transform: translate(20px, -50%); opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        z-index: 50; backdrop-filter: blur(5px);
+    }
+    .star-popup.visible { opacity: 1; pointer-events: auto; }
+    .popup-img { width: 100%; height: 160px; background-color: #111; margin-bottom: 15px; }
+    /* 修正字体映射 */
+    .popup-title { font-family: var(--font-title); font-size: 16px; margin: 0 0 5px 0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
+    .popup-meta { font-family: var(--font-mono); font-weight: 500; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;}
+
+    /* =========================================
+       06. RESPONSIVE DESIGN (Tablet & Mobile)
+       ========================================= */
+    @media screen and (max-width: 1024px) {
+        .sys-nav { padding: 30px 40px 0 40px; }
+        .home-album-card { flex: 0 0 320px; padding: 0; }
+        .home-fg-albums { padding: 0 calc(50vw - 160px); gap: 40px;}
+        
+        .detail-hero-section { gap: 40px; padding: 20px 40px; }
+        .detail-main-img-wrapper { max-width: 320px; }
+        .detail-sidebar { width: 280px; }
+    }
+
+    @media screen and (max-width: 768px) {
+        /* 将导航栏边距统一为 30px 对齐 */
+        .sys-nav { flex-direction: column; gap: 20px; padding: 50px 30px 0 30px; }
+        .nav-center { width: 100%; justify-content: center; gap: 25px; }
+        .nav-btn { font-size: 10px; }
+        .nav-left, .nav-right { display: none; }
+        
+        .home-album-card { flex: 0 0 280px; padding: 0; }
+        .home-fg-albums { padding: 0 calc(50vw - 140px); gap: 25px;}
+        
+        /* 同步缩小移动端标题 */
+        .home-album-title { font-size: 18px; }
+        .meta-title-section h2 { font-size: 18px; }
+        
+        /* 移除会导致层级覆盖和导航失效的强制 display 设置 */
+        .detail-main { display: flex; flex-direction: column; overflow-y: auto; justify-content: flex-start; width: 100%; }
+        
+        /* 统一设置左右 30px 边距，实现完美垂直网格对齐 */
+        .detail-top-nav { padding: 30px 30px 0 30px; margin-bottom: 20px; }
+        
+        .detail-hero-section { display: flex; flex-direction: column; gap: 30px; padding: 0 30px; min-height: auto; }
+        /* 移除最大宽度限制，让图片贴合左右 30px 的内边距 */
+        .detail-main-img-wrapper { max-width: 100%; width: 100%; margin: 0; }
+        
+        /* 移除多余的 Padding，跟随父级的 30px 对齐 */
+        .detail-sidebar { width: 100%; padding: 0; margin: 0; box-sizing: border-box; }
+        .meta-title-section { margin-bottom: 30px; text-align: center; }
+        
+        .data-table { gap: 15px; }
+        .data-val { max-width: 60%; word-break: break-word; text-align: right; } 
+        
+        /* Filmstrip 同样应用左右 30px 边距，确保第一张缩略图左对齐 */
+        .detail-filmstrip { height: auto; padding: 10px 30px 40px 30px; gap: 15px; margin: 0; justify-content: flex-start; width: 100%; box-sizing: border-box; }
+        .detail-thumb { flex: 0 0 80px; height: 53px; }
+        
+        .map-filters-panel { top: 20px; left: 20px; right: 20px; padding: 15px; }
+        .map-select { width: auto; max-width: 120px; }
+        .star-popup { transform: translate(-50%, 20px); left: 50% !important; }
+        .filter-collapse-btn { display: block !important; } 
+    }
+</style>
+</head>
+<body>
+
+    <!-- REFINED NAVIGATION (Only 2 Primary Links) -->
+    <header class="sys-nav">
+        <div class="nav-left"></div>
+        <div class="nav-center">
+            <button class="nav-btn active" onclick="switchPage('home')">PERSONAL ARCHIVE</button>
+            <button class="nav-btn" onclick="switchPage('map')">WORLD FILM MAP</button>
+        </div>
+        <div class="nav-right">
+            <button class="add-album-btn">+ ADD NEW ALBUM</button>
+        </div>
+    </header>
+
+    <div class="view-container">
+
+        <!-- PAGE 01: PERSONAL ARCHIVE (HOME) -->
+        <div id="page-home" class="page-view active">
+            <div class="home-stage">
+                <div class="home-fg-wrapper" id="homeFgScroller">
+                    <div class="home-fg-albums" id="homeFgTrack"></div>
+                </div>
+            </div>
+
+            <div class="minimal-timeline">
+                <div class="timeline-needle"></div>
+                <div class="timeline-current" id="timelineText">2024 // SEPTEMBER</div>
+                <div class="timeline-months">
+                    <span>AUG</span>
+                    <span class="dot">■</span>
+                    <span class="active">SEP</span>
+                    <span class="dot">■</span>
+                    <span>OCT</span>
+                    <span class="dot">■</span>
+                    <span>NOV</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 02: FILM DETAIL (Accessed via clicking Home Cards) -->
+        <div id="page-detail" class="page-view">
+            <div class="detail-main">
+                <div class="detail-top-nav">
+                    <button class="back-btn" onclick="switchPage('home')">&larr; BACK TO ARCHIVE</button>
+                </div>
+                
+                <!-- Image & Metadata Center Stage -->
+                <div class="detail-hero-section">
+                    <div class="detail-main-img-wrapper">
+                        <div class="detail-main-img bg-img-cover" id="detailMainImg" style="background-image: url('000046.jpg');"></div>
+                    </div>
+
+                    <div class="detail-sidebar">
+                        <div class="meta-title-section">
+                            <h2 id="detailTitle">Nocturnal Veil</h2>
+                            <p id="detailRef">REF: 2024-SEP-01</p>
+                        </div>
+                        
+                        <div class="data-table">
+                            <div class="data-row"><span class="data-lbl">TIMESTAMP</span><span class="data-val" id="detailDate">SEP 14, 2024</span></div>
+                            <div class="data-row"><span class="data-lbl">LOCATION</span><span class="data-val" id="detailLoc">PASADENA, CA</span></div>
+                            <div class="data-row"><span class="data-lbl">HARDWARE</span><span class="data-val" id="detailCam">LEICA M6</span></div>
+                            <div class="data-row"><span class="data-lbl">OPTICS</span><span class="data-val" id="detailLens">SUMMICRON 35MM F/2</span></div>
+                            <div class="data-row"><span class="data-lbl">EMULSION</span><span class="data-val" id="detailFilm">KODAK PORTRA 400</span></div>
+                            <div class="data-row"><span class="data-lbl">APERTURE</span><span class="data-val" id="detailAperture">f/2.8</span></div>
+                            <div class="data-row"><span class="data-lbl">SHUTTER</span><span class="data-val" id="detailShutter">1/60s</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-filmstrip" id="detailFilmstrip"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 03: WORLD FILM MAP -->
+        <div id="page-map" class="page-view">
+            <div class="map-filters-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <h4 style="margin: 0;">CONNECTION FILTERS</h4>
+                    <button class="filter-collapse-btn" id="filterCollapseBtn" style="display: none; background: transparent; border: 1px solid #555; color: #FFF; font-family: var(--font-mono); font-size: 14px; cursor: pointer; padding: 2px 8px;">—</button>
+                </div>
+                
+                <div id="filterContent" style="display: flex; flex-direction: column; gap: 20px; margin-top: 15px;">
+                    <!-- 蓝线代表相机型号 -->
+                    <label class="filter-toggle blue">
+                        <input type="checkbox" id="filterCamCb" checked>
+                        <div class="filter-box"></div> CAMERA: 
+                        <select id="filterCamSelect" class="map-select">
+                            <option value="LEICA M6">LEICA M6</option>
+                            <option value="HASSELBLAD 500CM">HASSELBLAD 500CM</option>
+                            <option value="CONTAX G2">CONTAX G2</option>
+                            <option value="MAMIYA 7">MAMIYA 7</option>
+                        </select>
+                    </label>
+                    
+                    <!-- 红线代表胶卷类型 -->
+                    <label class="filter-toggle red">
+                        <input type="checkbox" id="filterFilmCb" checked>
+                        <div class="filter-box"></div> FILM STOCK:
+                        <select id="filterFilmSelect" class="map-select">
+                            <option value="PORTRA 400">PORTRA 400</option>
+                            <option value="ILFORD HP5">ILFORD HP5</option>
+                            <option value="EKTAR 100">EKTAR 100</option>
+                            <option value="PORTRA 160">PORTRA 160</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="map-container" id="mapContainer">
+                <canvas id="globe-canvas"></canvas>
+                
+                <div class="star-popup" id="starPopup">
+                    <div class="popup-img bg-img-cover" id="popupImg"></div>
+                    <h3 class="popup-title" id="popupTitle">Location Data</h3>
+                    <div class="popup-meta" id="popupMeta">CAM / FILM</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script>
+        /* =========================================
+           Navigation Logic
+           ========================================= */
+        let animationFrameId = null;
+
+        function switchPage(pageId) {
+            if(animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+                if (pageId === 'home') setTimeout(initHomeScroll, 50);
+                if (pageId === 'map') setTimeout(initMap, 50);
+            }
+            
+            // Highlight main nav buttons
+            const btns = document.querySelectorAll('.nav-btn');
+            if(pageId === 'home' || pageId === 'detail') { if(btns[0]) btns[0].classList.add('active'); }
+            if(pageId === 'map') { if(btns[1]) btns[1].classList.add('active'); }
+        }
+
+        /* =========================================
+           HOME PAGE & DETAIL DYNAMIC LOGIC
+           ========================================= */
+        let homeInit = false;
+        let homeData = []; 
+        
+        // 【修改1】删除了原先硬编码的全局 imageLibrary
+
+        function initHomeScroll() {
+            const scroller = document.getElementById('homeFgScroller');
+            const fgTrack = document.getElementById('homeFgTrack');
+            const timelineText = document.getElementById('timelineText');
+
+            if (!homeInit) {
+                // 【修改2】在你的 homeData 中新增 gallery 数组，放入对应文件夹的真实图片路径
+                // 注意：苹果电脑对文件后缀的大小写是敏感的（比如 .JPG 和 .jpg），请确保与你文件夹里一致
+                homeData = [
+                    { 
+                        title: "OAKVILLE MEMORY", cam: "LEICA M6", film: "PORTRA 400", loc: "OAKVILLE, CA", 
+                        img: "./assets/album1/1-3.JPG", date: "2024 // SEPTEMBER", ref: "2024-SEP-01", lens: "SUMMICRON 35MM F/2",
+                        gallery: [
+                            "././assets/album1/1-1.JPG",
+                            "././assets/album1/1-2.JPG",
+                            "././assets/album1/1-3.JPG",
+                            "././assets/album1/1-4.JPG",
+                            "././assets/album1/1-5.jpg",
+                            "././assets/album1/1-6.JPG",
+                            "././assets/album1/1-7.JPG",
+                            "././assets/album1/1-8.jpg"
+                        ]
+                    },
+                    { 
+                        title: "PALETTE WORLD", cam: "HASSELBLAD 500CM", film: "ILFORD HP5", loc: "MEXICO CITY, MX", 
+                        img: "./assets/album2/2-6.jpg", date: "2024 // OCTOBER", ref: "2024-OCT-12", lens: "ZEISS 80MM F/2.8",
+                        gallery: [
+                            "././assets/album2/2-1.jpg",
+                            "././assets/album2/2-2.jpg",
+                            "././assets/album2/2-3.jpg",
+                            "././assets/album2/2-4.jpg",
+                            "././assets/album2/2-5.jpg",
+                            "././assets/album2/2-6.jpg",
+                            "././assets/album2/2-7.jpg",
+                            "././assets/album2/2-8.jpg",
+                            "././assets/album2/2-9.jpg", // 请根据你 album2 里的实际图片补充这个数组
+                        ]
+                    },
+                    { 
+                        title: "DALIY WESTCOAST", cam: "CONTAX G2", film: "EKTAR 100", loc: "SAN FRANCISCO, US", 
+                        img: "./assets/album3/3-3.jpg", date: "2024 // NOVEMBER", ref: "2024-NOV-05", lens: "PLANAR 45MM F/2",
+                        gallery: [
+                            "././assets/album3/3-1.jpg",
+                            "././assets/album3/3-2.jpg",
+                            "././assets/album3/3-3.jpg",
+                            "././assets/album3/3-4.jpg",
+                            "././assets/album3/3-5.jpg",
+                            "././assets/album3/3-6.jpg",
+                            "././assets/album3/3-7.jpg",
+                            "././assets/album3/3-8.jpg",
+                            "././assets/album3/3-9.jpg", // 请补充 album3 里的实际图片
+                        ]
+                    },
+                    { 
+                        title: "NICE NICE", cam: "MAMIYA 7", film: "PORTRA 160", loc: "NICE, FR", 
+                        img: "./assets/album4/4-6.jpg", date: "2024 // DECEMBER", ref: "2024-DEC-21", lens: "65MM F/4",
+                        gallery: [
+                            "././assets/album4/4-1.jpg",
+                            "././assets/album4/4-2.jpg",
+                            "././assets/album4/4-3.jpg",
+                            "././assets/album4/4-4.jpg",
+                            "././assets/album4/4-5.jpg",
+                            "././assets/album4/4-6.jpg",
+                            "././assets/album4/4-7.jpg",
+                            "././assets/album4/4-8.jpg",
+                            "././assets/album4/4-9.jpg",
+                            "././assets/album4/4-10.jpg",
+                            "././assets/album4/4-11.jpg",
+                            "././assets/album4/4-12.jpg",
+                            "././assets/album4/4-13.jpg",
+                            "././assets/album4/4-14.jpg",
+                            "././assets/album4/4-15.jpg",
+                            "././assets/album4/4-16.jpg", // 请补充 album4 里的实际图片
+                        ]
+                    }
+                ];
+                
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+                let isDraggingScroll = false;
+
+                homeData.forEach((d, i) => {
+                    const card = document.createElement('div');
+                    card.className = `home-album-card ${i===0 ? 'is-center' : ''}`;
+                    card.addEventListener('click', () => {
+                        if (isDraggingScroll) return; 
+                        openDetailView(d);
+                    });
+                    
+                    card.innerHTML = `
+                        <div class="img-wrapper">
+                            <div class="home-album-img bg-img-cover" style="background-image: url('${d.img}')"></div>
+                        </div>
+                        <div class="home-album-title">${d.title}</div>
+                        <div class="home-album-meta">${d.cam} / ${d.film}</div>
+                    `;
+                    fgTrack.appendChild(card);
+                });
+
+                scroller.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    isDraggingScroll = false;
+                    scroller.style.scrollSnapType = 'none'; 
+                    scroller.style.cursor = 'grabbing';
+                    startX = e.pageX - scroller.offsetLeft;
+                    scrollLeft = scroller.scrollLeft;
+                });
+                
+                scroller.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    scroller.style.scrollSnapType = 'x mandatory';
+                    scroller.style.cursor = '';
+                });
+                
+                scroller.addEventListener('mouseup', () => {
+                    isDown = false;
+                    scroller.style.scrollSnapType = 'x mandatory';
+                    scroller.style.cursor = '';
+                });
+                
+                scroller.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault(); 
+                    const x = e.pageX - scroller.offsetLeft;
+                    const walk = (x - startX) * 1.5; 
+                    if (Math.abs(walk) > 10) {
+                        isDraggingScroll = true; 
+                    }
+                    scroller.scrollLeft = scrollLeft - walk;
+                });
+
+                scroller.addEventListener('scroll', () => {
+                    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+                    if (maxScrollLeft <= 0) return;
+                    
+                    const cards = document.querySelectorAll('.home-album-card');
+                    const centerPoint = scroller.scrollLeft + scroller.clientWidth / 2;
+                    let activeIndex = 0;
+                    let minDistance = Infinity;
+                    
+                    cards.forEach((card, i) => {
+                        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+                        const distance = Math.abs(centerPoint - cardCenter);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            activeIndex = i;
+                        }
+                    });
+
+                    cards.forEach((card, i) => {
+                        if (i === activeIndex) card.classList.add('is-center');
+                        else card.classList.remove('is-center');
+                    });
+
+                    if(timelineText) timelineText.textContent = homeData[activeIndex].date;
+                });
+
+                homeInit = true;
+            }
+        }
+
+        function openDetailView(albumData) {
+            document.getElementById('detailMainImg').style.backgroundImage = `url('${albumData.img}')`;
+            document.getElementById('detailTitle').textContent = albumData.title;
+            document.getElementById('detailRef').textContent = `REF: ${albumData.ref}`;
+            document.getElementById('detailCam').textContent = albumData.cam;
+            document.getElementById('detailLens').textContent = albumData.lens;
+            document.getElementById('detailFilm').textContent = albumData.film;
+            document.getElementById('detailLoc').textContent = albumData.loc;
+
+            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            let baseMonthStr = albumData.date.split("//")[1].trim().substring(0, 3);
+            let monthIndex = monthNames.indexOf(baseMonthStr);
+            if (monthIndex === -1) monthIndex = 8; 
+            
+            let baseDate = new Date(2024, monthIndex, 1, 15, 0, 0); 
+            
+            const filmstrip = document.getElementById('detailFilmstrip');
+            filmstrip.innerHTML = '';
+            
+            // 【修改3】不再使用 imageLibrary，直接读取每个相册专属的 gallery 数组
+            // 如果这个相册忘记配 gallery，就默认显示封面那一张图作为兜底
+            let thumbsData = albumData.gallery || [albumData.img];
+
+            const fakeApertures = ["f/1.4", "f/2.8", "f/4", "f/5.6", "f/8"];
+            const fakeShutters = ["1/30s", "1/60s", "1/125s", "1/250s", "1/500s"];
+
+            thumbsData.forEach((img, i) => {
+                const thumb = document.createElement('div');
+                // 判断：如果当前缩略图是该相册的封面图，则默认高亮（active）
+                thumb.className = `detail-thumb ${img === albumData.img ? 'active' : ''} bg-img-cover`;
+                thumb.setAttribute('data-id', String(i+1).padStart(2,'0'));
+                thumb.style.backgroundImage = `url('${img}')`;
+
+                const ap = fakeApertures[Math.floor(Math.random() * fakeApertures.length)];
+                const sh = fakeShutters[Math.floor(Math.random() * fakeShutters.length)];
+                const timeObj = new Date(baseDate.getTime() + (i * 24 * 60000)); 
+                
+                const timeStr = `${monthNames[timeObj.getMonth()]} ${timeObj.getDate().toString().padStart(2,'0')}, ${timeObj.getFullYear()} // ${timeObj.getHours().toString().padStart(2,'0')}:${timeObj.getMinutes().toString().padStart(2,'0')}`;
+
+                thumb.dataset.aperture = ap;
+                thumb.dataset.shutter = sh;
+                thumb.dataset.time = timeStr;
+
+                thumb.addEventListener('click', function() {
+                    document.querySelectorAll('.detail-thumb').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.getElementById('detailMainImg').style.backgroundImage = `url('${img}')`;
+                    
+                    document.getElementById('detailDate').textContent = this.dataset.time;
+                    document.getElementById('detailAperture').textContent = this.dataset.aperture;
+                    document.getElementById('detailShutter').textContent = this.dataset.shutter;
+                });
+
+                filmstrip.appendChild(thumb);
+            });
+
+            // 详情页初始化时，直接寻找高亮（封面）那张图的数据填入
+            const activeThumb = filmstrip.querySelector('.active') || filmstrip.children[0];
+            document.getElementById('detailDate').textContent = activeThumb.dataset.time;
+            document.getElementById('detailAperture').textContent = activeThumb.dataset.aperture;
+            document.getElementById('detailShutter').textContent = activeThumb.dataset.shutter;
+
+            switchPage('detail');
+        }
+
+        /* =========================================
+           MAP PAGE: 3D Technical Globe
+           ========================================= */
+        let mapInit = false;
+        let resumeMapAnimation = null;
+
+        function initMap() {
+            if (mapInit) {
+                if (resumeMapAnimation) resumeMapAnimation();
+                return;
+            }
+
+            const canvas = document.getElementById('globe-canvas');
+            const ctx = canvas.getContext('2d');
+            const popup = document.getElementById('starPopup');
+            
+            const images = ["././assets/map/1.jpg", "././assets/map/2.jpg", "././assets/map/3.jpg", "././assets/map/4.jpg", "././assets/map/5.jpg", "././assets/map/6.jpg", "././assets/map/7.jpg", "././assets/map/8.jpg", "././assets/map/9.jpg", "././assets/map/10.jpg", "././assets/map/11.jpg", "././assets/map/12.jpg", "././assets/map/13.jpg", "././assets/map/14.jpg", "././assets/map/15.jpg"];
+            const titles = ["SOFT NOISE", "LOST FRAME", "FADING LIGHT", "SILENT DRIFT", "BROKEN TIME", "EMPTY SIGNAL", "PALE ECHO", "BLURRED MEMORY", "QUIET STATIC", "SLOW EXPOSURE", "HIDDEN GRAIN", "FLOATING TRACE", "OPEN FRAME", "LIGHT LEAK", "PERIPHERAL VISION", ];
+            
+            const availableCams = ["LEICA M6", "HASSELBLAD 500CM", "CONTAX G2", "MAMIYA 7"];
+            const availableFilms = ["PORTRA 400", "ILFORD HP5", "EKTAR 100", "PORTRA 160"];
+
+            let R;
+            const resize = () => {
+                canvas.width = canvas.parentElement.clientWidth || window.innerWidth;
+                canvas.height = canvas.parentElement.clientHeight || (window.innerHeight - 100);
+                R = Math.min(canvas.width, canvas.height) * (window.innerWidth <= 768 ? 0.28 : 0.35);
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            const focalLength = 800;
+
+            const nodes = [];
+            for(let i=0; i<150; i++) {
+                const lat = Math.acos(2 * Math.random() - 1) - Math.PI/2; 
+                const lon = Math.random() * Math.PI * 2;
+                const randIndex = Math.floor(Math.random() * images.length);
+                
+                nodes.push({ 
+                    lat, lon, 
+                    isMemory: Math.random() > 0.8,
+                    img: images[randIndex],
+                    title: titles[randIndex],
+                    cam: availableCams[Math.floor(Math.random() * availableCams.length)],
+                    film: availableFilms[Math.floor(Math.random() * availableFilms.length)]
+                });
+            }
+
+            let rotationY = 0;
+            let rotationX = 0.15; 
+            let isDragging = false;
+            let lastMouseX = 0, lastMouseY = 0;
+
+            let zoomLevel = 1.0;
+            const minZoom = 0.4; 
+            const maxZoom = 4.0; 
+            let initialPinchDistance = null;
+
+            canvas.addEventListener('mousedown', (e) => { isDragging = true; lastMouseX = e.clientX; lastMouseY = e.clientY; });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            
+            canvas.addEventListener('wheel', (e) => {
+                if (document.getElementById('page-map').classList.contains('active')) {
+                    e.preventDefault(); 
+                    zoomLevel -= e.deltaY * 0.001; 
+                    zoomLevel = Math.max(minZoom, Math.min(maxZoom, zoomLevel));
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchstart', (e) => { 
+                if (e.touches.length === 1) {
+                    isDragging = true; 
+                    lastMouseX = e.touches[0].clientX; 
+                    lastMouseY = e.touches[0].clientY; 
+                } else if (e.touches.length === 2) {
+                    initialPinchDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            }, {passive: false}); 
+            
+            window.addEventListener('touchend', (e) => { 
+                isDragging = false; 
+                if (e.touches.length < 2) {
+                    initialPinchDistance = null;
+                }
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                if (!document.getElementById('page-map').classList.contains('active')) return;
+                e.preventDefault(); 
+
+                if (e.touches.length === 1 && isDragging) {
+                    const deltaX = e.touches[0].clientX - lastMouseX;
+                    const deltaY = e.touches[0].clientY - lastMouseY;
+                    rotationY -= deltaX * 0.005;
+                    rotationX += deltaY * 0.005;
+                    lastMouseX = e.touches[0].clientX;
+                    lastMouseY = e.touches[0].clientY;
+                } else if (e.touches.length === 2 && initialPinchDistance) {
+                    const currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const pinchDelta = currentDistance - initialPinchDistance;
+                    zoomLevel += pinchDelta * 0.005; 
+                    zoomLevel = Math.max(minZoom, Math.min(maxZoom, zoomLevel));
+                    initialPinchDistance = currentDistance; 
+                }
+            }, {passive: false});
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                if (isDragging) {
+                    rotationY -= (e.clientX - lastMouseX) * 0.005;
+                    rotationX += (e.clientY - lastMouseY) * 0.005;
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+                }
+
+                let hovered = false;
+                for(let node of nodes) {
+                    if (node.isMemory && node.z2d > 0 && node.visible) { 
+                        const dist = Math.hypot(mouseX - node.x2d, mouseY - node.y2d);
+                        if (dist < 15) {
+                            hovered = true;
+                            document.getElementById('popupTitle').textContent = node.title;
+                            document.getElementById('popupImg').style.backgroundImage = `url(${node.img})`;
+                            document.getElementById('popupMeta').textContent = `${node.cam} // ${node.film}`;
+                            
+                            let px = node.x2d + 20;
+                            let py = node.y2d;
+                            if (px + 280 > canvas.width) px = node.x2d - 280;
+                            if (py + 200 > canvas.height) py = node.y2d - 100;
+                            
+                            if (window.innerWidth <= 768) {
+                                popup.style.left = '50%';
+                                popup.style.top = '100px';
+                                popup.style.transform = 'translateX(-50%)';
+                            } else {
+                                popup.style.left = px + 'px';
+                                popup.style.top = py + 'px';
+                                popup.style.transform = 'translate(20px, -50%)';
+                            }
+
+                            popup.classList.add('visible');
+                            break;
+                        }
+                    }
+                }
+                if (!hovered) popup.classList.remove('visible');
+            });
+
+            const collapseBtn = document.getElementById('filterCollapseBtn');
+            const filterContent = document.getElementById('filterContent');
+            if (collapseBtn && filterContent) {
+                if (window.innerWidth <= 768) {
+                    filterContent.style.display = 'none';
+                    collapseBtn.textContent = '+';
+                }
+                collapseBtn.onclick = function() {
+                    if (filterContent.style.display === 'none') {
+                        filterContent.style.display = 'flex';
+                        collapseBtn.textContent = '—';
+                    } else {
+                        filterContent.style.display = 'none';
+                        collapseBtn.textContent = '+';
+                    }
+                };
+            }
+
+            function drawGlobeWireframe(cx, cy, currentR) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.arc(cx, cy, currentR, 0, Math.PI*2); ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(cx, cy, currentR, currentR*Math.abs(Math.sin(rotationX)), 0, 0, Math.PI*2); ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(cx, cy, currentR*Math.abs(Math.cos(rotationY)), currentR, 0, 0, Math.PI*2); ctx.stroke();
+            }
+
+            function animateMap() {
+                if(!document.getElementById('page-map').classList.contains('active')) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if(!isDragging) rotationY -= 0.001; 
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+                
+                const currentR = R * zoomLevel;
+
+                drawGlobeWireframe(cx, cy, currentR);
+
+                nodes.forEach(n => {
+                    let x1 = currentR * Math.cos(n.lat) * Math.cos(n.lon + rotationY);
+                    let y1 = currentR * Math.sin(n.lat);
+                    let z1 = currentR * Math.cos(n.lat) * Math.sin(n.lon + rotationY);
+
+                    let y2 = y1 * Math.cos(rotationX) - z1 * Math.sin(rotationX);
+                    let z2 = y1 * Math.sin(rotationX) + z1 * Math.cos(rotationX);
+
+                    n.z2d = z2;
+                    n.visible = (focalLength + z2 > 10); 
+                    
+                    if (n.visible) {
+                        const scale = focalLength / (focalLength + z2);
+                        n.x2d = cx + x1 * scale;
+                        n.y2d = cy + y2 * scale;
+                        n.scale = scale;
+                    }
+                });
+
+                const fCamActive = document.getElementById('filterCamCb').checked;
+                const fCamVal = document.getElementById('filterCamSelect').value;
+                
+                const fFilmActive = document.getElementById('filterFilmCb').checked;
+                const fFilmVal = document.getElementById('filterFilmSelect').value;
+
+                for(let i=0; i<nodes.length; i++) {
+                    for(let j=i+1; j<nodes.length; j++) {
+                        const n1 = nodes[i];
+                        const n2 = nodes[j];
+                        
+                        if (!n1.visible || !n2.visible) continue;
+
+                        const dist = Math.hypot(n1.lat - n2.lat, n1.lon - n2.lon);
+                        
+                        if (dist < 0.6) { 
+                            let strokeColor = null;
+
+                            if (fCamActive && n1.cam === n2.cam && n1.cam === fCamVal) {
+                                strokeColor = '0, 85, 255'; 
+                            } 
+                            else if (fFilmActive && n1.film === n2.film && n1.film === fFilmVal) {
+                                strokeColor = '230, 57, 70'; 
+                            }
+
+                            if (strokeColor) {
+                                ctx.beginPath();
+                                ctx.moveTo(n1.x2d, n1.y2d);
+                                ctx.lineTo(n2.x2d, n2.y2d);
+                                const avgZ = (n1.z2d + n2.z2d) / 2;
+                                ctx.strokeStyle = `rgba(${strokeColor}, ${avgZ > 0 ? 0.6 : 0.05})`;
+                                ctx.lineWidth = 1.2;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+
+                nodes.forEach(n => {
+                    if (!n.visible) return; 
+
+                    const alpha = n.z2d > 0 ? (n.isMemory ? 1 : 0.4) : 0.1; 
+                    const size = n.isMemory ? 3 * n.scale : 1.5 * n.scale;
+                    
+                    if (size <= 0) return; 
+
+                    ctx.fillStyle = '#FFF';
+                    ctx.globalAlpha = alpha;
+                    
+                    ctx.beginPath();
+                    ctx.arc(n.x2d, n.y2d, size, 0, Math.PI*2);
+                    ctx.fill();
+                    
+                    if (n.isMemory && n.z2d > 0) {
+                        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(n.x2d - size*2, n.y2d - size*2, size*4, size*4);
+                    }
+                });
+                ctx.globalAlpha = 1;
+
+                animationFrameId = requestAnimationFrame(animateMap);
+            }
+
+            resumeMapAnimation = () => {
+                requestAnimationFrame(animateMap);
+            };
+
+            resumeMapAnimation();
+            mapInit = true;
+        }
+
+        window.onload = () => {
+            initHomeScroll();
+        };
+
+    </script>
+</body>
+</html>
