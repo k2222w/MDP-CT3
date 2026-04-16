@@ -15,8 +15,8 @@
         --bg-panel: #0A0A0A;       
         
         --text-main: #FFFFFF;      
-        --text-muted: #666666;     
-        --text-ghost: #222222;     
+        --text-muted: #A3A3A3;     /* Updated to brighter gray for legibility */
+        --text-ghost: #333333;     
         
         --accent-white: #FFFFFF;   
         --accent-blue: #0055FF;
@@ -131,6 +131,8 @@
         margin-bottom: 40px;
         text-transform: uppercase;
         letter-spacing: 1px;
+        line-height: 1.6;
+        max-width: 800px;
     }
 
     /* =========================================
@@ -151,7 +153,7 @@
     .color-name { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--text-main); }
     .color-hex { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
 
-    /* Typography (Updated to exact pixel sizes used in site) */
+    /* Typography */
     .type-row {
         display: flex;
         gap: 60px;
@@ -163,12 +165,12 @@
     .type-usage { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); line-height: 1.8; }
     .type-sample { flex: 2; display: flex; flex-direction: column; gap: 20px;}
     
-    .ts-space-h1 { font-family: var(--font-title); font-size: 28px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+    .ts-space-h1 { font-family: var(--font-title); font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
     .ts-space-h2 { font-family: var(--font-title); font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;}
     
     .ts-plex-val { font-family: var(--font-mono); font-size: 14px; font-weight: 400; color: var(--text-main); text-transform: uppercase;}
     .ts-plex-nav { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px;}
-    .ts-plex-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
+    .ts-plex-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
 
     /* Images Style Grid */
     .img-style-grid {
@@ -213,13 +215,21 @@
     .comp-label {
         font-family: var(--font-mono);
         font-size: 9px;
-        color: var(--text-muted);
+        color: var(--accent-white);
+        font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 2px;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         width: 100%;
         border-bottom: var(--border-light);
         padding-bottom: 10px;
+    }
+    .comp-desc {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-bottom: 30px;
+        line-height: 1.5;
     }
 
     /* Controls: Nav & Buttons */
@@ -240,7 +250,7 @@
     .add-album-btn:hover { background: var(--text-main); color: var(--bg-base); }
 
     /* Controls: Filters & Inputs */
-    .filter-toggle { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--text-main); cursor: pointer;}
+    .filter-toggle { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-muted); cursor: pointer;}
     .filter-box { width: 14px; height: 14px; border: 1px solid var(--accent-blue); position: relative; flex-shrink: 0;}
     .filter-box::after { content: ''; position: absolute; top: 2px; left: 2px; width: 8px; height: 8px; background-color: var(--accent-blue); }
 
@@ -251,34 +261,32 @@
     }
 
     /* Core Component: Album Card */
-    .home-album-card { width: 220px; position: relative; padding: 20px; }
+    .home-album-card { width: 280px; position: relative; padding: 0; }
     .img-wrapper { position: relative; width: 100%; aspect-ratio: 1/1; margin-bottom: 15px; }
-    .focus-bracket { position: absolute; width: 20px; height: 20px; border: 2px solid var(--accent-white); pointer-events: none; }
-    .fb-tl { top: -10px; left: -10px; border-right: none; border-bottom: none; }
-    .fb-tr { top: -10px; right: -10px; border-left: none; border-bottom: none; }
-    .fb-bl { bottom: -10px; left: -10px; border-right: none; border-top: none; }
-    .fb-br { bottom: -10px; right: -10px; border-left: none; border-top: none; }
-    .home-album-img { width: 100%; height: 100%; background-color: #222; }
-    .home-album-title { font-family: var(--font-sans); font-weight: 700; font-size: 14px; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 1px;}
-    .home-album-meta { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+    
+    /* Simulate active state for the DS */
+    .home-album-img { width: 100%; height: 100%; background-color: #222; border: 1px solid #FFF; box-sizing: border-box; }
+    
+    .home-album-title { font-family: var(--font-title); font-weight: 700; font-size: 24px; margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 1.5px;}
+    .home-album-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
 
     /* Core Component: Timeline */
     .minimal-timeline { display: flex; flex-direction: column; align-items: center; width: 100%;}
     .timeline-needle { width: 1px; height: 35px; background: #333; margin-bottom: 10px; }
-    .timeline-current { font-family: var(--font-mono); font-size: 13px; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase;}
-    .timeline-months { display: flex; gap: 20px; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 2px;}
+    .timeline-current { font-family: var(--font-mono); font-weight: 500; font-size: 13px; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase;}
+    .timeline-months { display: flex; gap: 30px; align-items: center; font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); letter-spacing: 2px;}
     .timeline-months span.dot { font-size: 6px; color: #333; }
     .timeline-months span.active { color: var(--text-main); border-bottom: 1px solid var(--text-main); padding-bottom: 2px;}
 
     /* Core Component: Metadata List */
-    .data-table { display: flex; flex-direction: column; gap: 15px; width: 100%;}
+    .data-table { display: flex; flex-direction: column; gap: 20px; width: 100%;}
     .data-row { display: flex; justify-content: space-between; align-items: baseline; } 
-    .data-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
+    .data-lbl { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
     .data-val { font-family: var(--font-mono); font-size: 14px; color: var(--text-main); text-align: right;}
 
     /* Core Component: Filmstrip Thumb */
-    .detail-strip { display: flex; gap: 15px; }
-    .detail-thumb { width: 100px; height: 66px; background-color: #222; opacity: 0.4; }
+    .detail-strip { display: flex; gap: 20px; }
+    .detail-thumb { width: 140px; height: 93px; background-color: #222; opacity: 0.4; }
     .detail-thumb.active { opacity: 1; border: 1px solid #FFF;}
 
 </style>
@@ -305,7 +313,9 @@
             
             <div class="ds-section">
                 <div class="ds-section-title">Color Palette</div>
-                <div class="ds-section-desc">Strictly monochromatic core with stark, luminous accents for data visualization.</div>
+                <div class="ds-section-desc">
+                    The color system relies on a strictly monochromatic core to emulate the darkness of a developing room or a digital terminal. Stark, luminous neon accents (Cyan and Red) are reserved purely for active data visualization and filtering states. Grey values (#A3A3A3) have been calibrated for optimal legibility against the #050505 deep background.
+                </div>
                 
                 <div class="color-grid">
                     <div class="color-card">
@@ -321,12 +331,12 @@
                     <div class="color-card">
                         <div class="color-swatch" style="background-color: var(--text-ghost);"></div>
                         <span class="color-name">Ghost Lines</span>
-                        <span class="color-hex">#222222</span>
+                        <span class="color-hex">#333333</span>
                     </div>
                     <div class="color-card">
                         <div class="color-swatch" style="background-color: var(--text-muted);"></div>
                         <span class="color-name">Muted Text</span>
-                        <span class="color-hex">#666666</span>
+                        <span class="color-hex">#A3A3A3</span>
                     </div>
                     <div class="color-card">
                         <div class="color-swatch" style="background-color: var(--text-main);"></div>
@@ -348,35 +358,39 @@
 
             <div class="ds-section">
                 <div class="ds-section-title">Typography</div>
-                <div class="ds-section-desc">Establishing hierarchy through extreme contrast in tracking and weight. Displayed in exact pixel sizes used across the platform.</div>
+                <div class="ds-section-desc">
+                    Typography is used to establish strict hierarchy and technical tone. Space Grotesk (Bold 700) provides brutalist, geometric anchors for primary titles. IBM Plex Mono carries the functional weight—its weight is set to Medium (500) at small sizes (11-13px) to ensure character strokes remain solid and highly legible against the dark void.
+                </div>
                 
                 <div class="type-row">
                     <div class="type-info">
                         <div class="type-name">Space Grotesk</div>
-                        <div class="type-usage">Primary Display / Titles<br>Weights: Bold (700)<br><br>Sizes Applied:<br>- 28px (Detail Page Titles)<br>- 18px (Home Gallery Cards)<br>- 16px (Map Popups)</div>
+                        <div class="type-usage">Primary Display / Titles<br>Weights: Bold (700)<br><br>Sizes Applied:<br>- 24px (Album/Detail Titles)<br>- 18px (Mobile Titles)<br>- 16px (Map Popups)</div>
                     </div>
                     <div class="type-sample">
-                        <div class="ts-space-h1">28PX / NOCTURNAL VEIL</div>
-                        <div class="ts-space-h2">18PX / ALBUM TITLE</div>
+                        <div class="ts-space-h1">24PX / NOCTURNAL VEIL</div>
+                        <div class="ts-space-h2">18PX / MOBILE TITLE</div>
                     </div>
                 </div>
 
                 <div class="type-row">
                     <div class="type-info">
                         <div class="type-name">IBM Plex Mono</div>
-                        <div class="type-usage">Metadata / Controls / Labels<br>Weights: Regular (400), Medium (500)<br>Always Uppercase<br><br>Sizes Applied:<br>- 14px (Table Values)<br>- 13px (Navigation & Timeline)<br>- 12px (Control Elements)<br>- 11px (Metadata Labels)</div>
+                        <div class="type-usage">Metadata / Controls / Labels<br>Weights: Regular (400), Medium (500)<br>Always Uppercase<br><br>Sizes Applied:<br>- 14px (Table Values)<br>- 13px (Navigation & Timeline)<br>- 12px (Meta Labels & Controls)</div>
                     </div>
                     <div class="type-sample">
                         <div class="ts-plex-val">14PX / SEP 14, 2024</div>
                         <div class="ts-plex-nav">13PX / PERSONAL ARCHIVE</div>
-                        <div class="ts-plex-meta">11PX / LEICA M6 / PORTRA 400</div>
+                        <div class="ts-plex-meta">12PX / LEICA M6 / PORTRA 400</div>
                     </div>
                 </div>
             </div>
 
             <div class="ds-section">
                 <div class="ds-section-title">Images Style</div>
-                <div class="ds-section-desc">Raw film scans with high contrast, deep blacks, and natural grain. Embedded directly against the pure black void without heavy bounding boxes.</div>
+                <div class="ds-section-desc">
+                    The visual aesthetic centers around raw, unadulterated film scans. High contrast, deep crushed blacks, and naturally preserved film grain are encouraged. Images are embedded directly against the pure black background, utilizing negative space rather than heavy bounding boxes to draw focus.
+                </div>
                 
                 <div class="img-style-grid">
                     <div>
@@ -407,11 +421,14 @@
             
             <div class="ds-section">
                 <div class="ds-section-title">Controls & States</div>
-                <div class="ds-section-desc">Interaction patterns for navigation and data filtering.</div>
+                <div class="ds-section-desc">
+                    Interactive components are designed to feel like physical switches or terminal commands. They rely on high-contrast changes (gray to white, or dark to neon) to clearly communicate active states.
+                </div>
                 
                 <div class="comp-grid">
                     <div class="comp-item">
                         <div class="comp-label">Global Navigation Link</div>
+                        <div class="comp-desc">Main routing anchors. Active states feature a stark 1px white underline bridging the text.</div>
                         <div style="display: flex; gap: 30px;">
                             <span class="nav-btn active">ACTIVE STATE</span>
                             <span class="nav-btn" style="color: var(--text-muted); border: none;">INACTIVE</span>
@@ -420,18 +437,19 @@
 
                     <div class="comp-item">
                         <div class="comp-label">Ghost Action Button</div>
+                        <div class="comp-desc">Used for secondary global actions (like Add Album). Inverts to solid white on hover for tactile feedback.</div>
                         <button class="add-album-btn">+ ADD NEW ALBUM</button>
-                        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 15px;">Hover: Inverts to Solid White.</p>
                     </div>
 
                     <div class="comp-item">
-                        <div class="comp-label">Map Filters (Custom Checkboxes)</div>
+                        <div class="comp-label">Map Filter Toggles</div>
+                        <div class="comp-desc">Custom checkboxes for the 3D map. Checked states illuminate with the system's neon accent colors (Cyan/Red).</div>
                         <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="filter-toggle" style="color: var(--accent-blue);">
+                            <div class="filter-toggle" style="color: var(--text-muted);">
                                 <div class="filter-box" style="border-color: var(--accent-blue);"><div style="position:absolute; top:2px; left:2px; width:8px; height:8px; background:var(--accent-blue);"></div></div> 
                                 CAMERA MODEL
                             </div>
-                            <div class="filter-toggle" style="color: var(--accent-red);">
+                            <div class="filter-toggle" style="color: var(--text-muted);">
                                 <div class="filter-box" style="border-color: var(--accent-red);"><div style="position:absolute; top:2px; left:2px; width:8px; height:8px; background:var(--accent-red);"></div></div> 
                                 FILM STOCK
                             </div>
@@ -440,6 +458,7 @@
 
                     <div class="comp-item">
                         <div class="comp-label">Dropdown Select</div>
+                        <div class="comp-desc">A minimalist inline dropdown menu used within filter panels. Relies entirely on a subtle bottom border.</div>
                         <select class="map-select">
                             <option>LEICA M6</option>
                             <option>HASSELBLAD 500CM</option>
@@ -450,25 +469,23 @@
 
             <div class="ds-section">
                 <div class="ds-section-title">Core Components & Layouts</div>
-                <div class="ds-section-desc">The primary structural blocks used to display the photographic archive.</div>
+                <div class="ds-section-desc">
+                    The structural building blocks of the archive. Layouts prioritize extreme grid alignment and negative space over physical borders, creating an unbroken, cinematic viewing experience.
+                </div>
                 
                 <div class="comp-grid">
                     
                     <!-- Album Card -->
                     <div class="comp-item" style="grid-column: span 1;">
                         <div class="comp-label">Gallery Focus Card (Home)</div>
+                        <div class="comp-desc">The hero element of the Personal Archive. Displays a 1:1 image format. When focused, a clean 1px solid white border illuminates the perimeter.</div>
                         <div class="home-album-card">
                             <div class="img-wrapper">
-                                <div class="focus-bracket fb-tl"></div><div class="focus-bracket fb-tr"></div>
-                                <div class="focus-bracket fb-bl"></div><div class="focus-bracket fb-br"></div>
                                 <div class="home-album-img" style="background-image: url('000046.jpg'); background-size: cover; background-position: center;"></div>
                             </div>
                             <div class="home-album-title">NOCTURNAL VEIL</div>
                             <div class="home-album-meta">LEICA M6 / PORTRA 400</div>
                         </div>
-                        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 15px; line-height: 1.5;">
-                            Padding separates the image from the outer Focus Brackets. Bracket thickness: 2px Solid White.
-                        </p>
                     </div>
 
                     <!-- Layout Column -->
@@ -477,6 +494,7 @@
                         <!-- Timeline -->
                         <div class="comp-item">
                             <div class="comp-label">Minimalist Timeline</div>
+                            <div class="comp-desc">A spatial indicator for chronological browsing. Relies on a vertical needle and geometric tracking dots.</div>
                             <div class="minimal-timeline">
                                 <div class="timeline-needle"></div>
                                 <div class="timeline-current">2024 // SEPTEMBER</div>
@@ -493,20 +511,18 @@
                         <!-- Filmstrip -->
                         <div class="comp-item">
                             <div class="comp-label">Filmstrip Gallery (States)</div>
+                            <div class="comp-desc">Horizontal scrolling gallery simulating a contact sheet. Active frame is signified by full opacity and a pure white outline.</div>
                             <div class="detail-strip">
                                 <div class="detail-thumb active" style="background-image: url('000046.jpg'); background-size: cover;"></div>
                                 <div class="detail-thumb" style="background-image: url('3942-5944.jpg'); background-size: cover;"></div>
-                                <div class="detail-thumb" style="background-image: url('260114108739010028.jpg'); background-size: cover;"></div>
                             </div>
-                            <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 15px; line-height: 1.5;">
-                                Inactive: 0.4 Opacity. Active: 1.0 Opacity + 1px Solid White Border.
-                            </p>
                         </div>
                     </div>
 
                     <!-- Metadata Table -->
                     <div class="comp-item" style="grid-column: span 2;">
                         <div class="comp-label">Metadata Block Layout (Detail Page)</div>
+                        <div class="comp-desc">Tabular data display without actual table lines. Flexbox <code>space-between</code> naturally pushes the 12px muted label and the 14px bright value to opposite edges, creating an invisible, highly aligned column.</div>
                         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
                             <div class="data-table">
                                 <div class="data-row"><span class="data-lbl">TIMESTAMP</span><span class="data-val">SEP 14, 2024</span></div>
@@ -515,9 +531,6 @@
                                 <div class="data-row"><span class="data-lbl">EMULSION</span><span class="data-val">KODAK PORTRA 400</span></div>
                             </div>
                         </div>
-                        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 30px; text-align: center; width: 100%;">
-                            Flexbox row layout with <code>justify-content: space-between</code>. No visible borders.
-                        </p>
                     </div>
 
                 </div>

@@ -140,22 +140,17 @@
     #page-detail { flex-direction: column; } 
     .detail-main { flex: 1; display: flex; flex-direction: column; background-color: transparent; position: relative; min-width: 0; width: 100%; overflow-y: auto; overflow-x: hidden;}
     
-    /* 强制返回按钮不换行，解除宽度限制 */
     .back-btn { white-space: nowrap; background: none; border: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; padding: 0; transition: color 0.3s; text-transform: uppercase; line-height: 1; margin-top: 0;}
     .back-btn:hover { color: var(--text-main); }
 
-    /* 三栏布局容器：控制最大宽度为 960px，确保左右边缘严格对齐 */
     .detail-hero-section { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 60px; min-height: 0; flex-shrink: 1; margin-top: 40px; }
-    /* align-items: stretch 会使得 Sidebar 与主图等高 */
-    .detail-hero-inner { display: flex; align-items: stretch; justify-content: space-between; gap: 40px; width: 100%; max-width: 1080px; margin: 0 auto; }
+    .detail-hero-inner { display: flex; align-items: stretch; justify-content: space-between; gap: 40px; width: 100%; max-width: 960px; margin: 0 auto; }
     
-    /* 让返回按钮的容器自适应宽度并置于顶部 */
     .detail-back-col { width: auto; flex-shrink: 0; display: flex; justify-content: flex-start; align-items: flex-start;}
 
     .detail-main-img-wrapper { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; }
     .detail-main-img { width: 100%; height: 100%; background-color: #111; }
     
-    /* Sidebar 设置为 flex column，利用 space-between 将标题和数据推向容器两端 */
     .detail-sidebar { width: 320px; background-color: transparent; flex-shrink: 0; padding: 0; display: flex; flex-direction: column; justify-content: space-between;}
     .meta-title-section { margin-bottom: 0; }
     
@@ -167,8 +162,7 @@
     .data-lbl { font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;}
     .data-val { font-family: var(--font-mono); font-size: 14px; color: var(--text-main); text-align: right;}
 
-    /* 底部居中的 Slide：调整内边距和最大宽度为 1080px (960+60+60)，使其内容左侧恰好与上方的 Back 按钮严格对齐 */
-    .detail-filmstrip { height: auto; background-color: transparent; border-top: none; display: flex; align-items: center; justify-content: flex-start; gap: 20px; padding: 40px 0px 60px 0px; overflow-x: auto; flex-shrink: 0; margin: auto auto 0 auto; width: 100%; max-width: 1080px; box-sizing: border-box;}
+    .detail-filmstrip { height: auto; background-color: transparent; border-top: none; display: flex; align-items: center; justify-content: flex-start; gap: 20px; padding: 40px 60px 60px 60px; overflow-x: auto; flex-shrink: 0; margin: auto auto 0 auto; width: 100%; max-width: 1080px; box-sizing: border-box;}
     .detail-thumb { flex: 0 0 140px; height: 93px; background-color: #111; cursor: pointer; transition: all 0.2s; opacity: 0.4; }
     .detail-thumb:hover { opacity: 0.8; }
     .detail-thumb.active { opacity: 1; border: 1px solid #FFF;}
@@ -236,8 +230,15 @@
     }
 
     @media screen and (max-width: 768px) {
-        .sys-nav { flex-direction: column; gap: 20px; padding: 50px 30px 0 30px; align-items: flex-start; }
-        .nav-center { width: 100%; justify-content: flex-start; gap: 25px; }
+        /* Mobile Nav: 简单的固定顶部间距 80px，留足屏幕上方物理空间 */
+        .sys-nav { 
+            flex-direction: column; 
+            gap: 20px; 
+            padding: 80px 30px 0 30px; 
+            align-items: stretch; 
+        }
+        /* 改为 space-between，让 World Film Map 完美贴合右侧，不往左偏 */
+        .nav-center { width: 100%; justify-content: space-between; gap: 0; }
         .nav-btn { font-size: 10px; }
         .nav-left, .nav-right { display: none; }
         
@@ -247,26 +248,57 @@
         .home-album-title { font-size: 18px; }
         .meta-title-section h2 { font-size: 18px; }
         
+        /* 首页时间线固定底部边距 */
+        .minimal-timeline { padding-bottom: 50px; }
+
         .detail-main { display: flex; flex-direction: column; overflow-y: auto; justify-content: flex-start; width: 100%; }
         
-        .detail-hero-section { padding: 0; margin-top: 30px; align-items: flex-start; }
-        .detail-hero-inner { flex-direction: column; gap: 25px; padding: 0 30px; width: 100%; box-sizing: border-box; }
+        /* 核心修复：移除 flex: 1，改为 display: block，让高度被图片和文字自然撑开，绝不会再遮挡底部 Slide */
+        .detail-hero-section { 
+            padding: 0; 
+            margin-top: 30px; 
+            align-items: flex-start; 
+            flex: none; 
+            height: auto; 
+            display: block; 
+        }
+        .detail-hero-inner { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 25px; 
+            padding: 0 30px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            height: auto; 
+            flex: none;
+        }
         
         .detail-back-col { width: 100%; justify-content: flex-start; }
         .back-btn { margin-top: 0; }
         
         .detail-main-img-wrapper { max-width: 100%; width: 100%; margin: 0; }
         
-        .detail-sidebar { width: 100%; padding: 0; margin: 0; box-sizing: border-box; justify-content: flex-start; }
+        .detail-sidebar { width: 100%; padding: 0; margin: 0; box-sizing: border-box; justify-content: flex-start; height: auto; }
         .meta-title-section { margin-bottom: 20px; text-align: left; }
         
         .data-table { gap: 15px; }
         .data-val { max-width: 60%; word-break: break-word; text-align: right; } 
         
-        .detail-filmstrip { height: auto; padding: 10px 30px 40px 30px; gap: 15px; margin: 0; justify-content: flex-start; width: 100%; box-sizing: border-box; }
+        /* 详情页画廊: 自然排列在 metadata 下方，增加底部边距 */
+        .detail-filmstrip { 
+            height: auto; 
+            padding: 20px 30px 60px 30px; 
+            gap: 15px; 
+            margin: 0; 
+            justify-content: flex-start; 
+            width: 100%; 
+            box-sizing: border-box; 
+            flex: none;
+        }
         .detail-thumb { flex: 0 0 80px; height: 53px; }
         
-        .map-filters-panel { top: 20px; left: 20px; right: 20px; padding: 15px; }
+        /* 地图页筛选面板向下移 80px，避开屏幕顶部 */
+        .map-filters-panel { top: 80px; left: 20px; right: 20px; padding: 15px; }
         .map-select { width: auto; max-width: 120px; }
         .star-popup { transform: translate(-50%, 20px); left: 50% !important; }
         .filter-collapse-btn { display: block !important; } 
